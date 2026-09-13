@@ -22,3 +22,7 @@ Application behavior is tested independently from learner understanding. Current
 - What AI helped with:
 
 Do not treat generated code or passing tests as evidence that the learner can independently explain the implementation.
+
+## 2026-09-13 — beginner course expanded
+
+Replaced the short reading outline with a 13-lesson course in nine chapter files. It starts with files, folders and terminals; explains terminology before code; links to actual source; supplies expected query results, safe editing steps, exercises and expandable answers. No application behavior changed. Learner exercise B remains intentionally unimplemented for practice.

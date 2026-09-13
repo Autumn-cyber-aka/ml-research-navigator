@@ -107,7 +107,7 @@ tests/              real-MySQL application and concurrency tests
 docs/               architecture, tutorial, demonstration and evidence
 ```
 
-Start learning with the [step-by-step Chinese guide](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
+Start learning with the [zero-prerequisite Chinese course](docs/LEARNING_GUIDE.md): 13 lessons covering files/terminals, a guided app tour, tables and SQL, Python basics, request tracing, a first edit, authentication, transactions, tests and interview practice. Every chapter includes exercises and reference answers. Then use the [course index](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
 
 ## Scope and limitations
 
