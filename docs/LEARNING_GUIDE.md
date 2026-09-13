@@ -4,11 +4,11 @@
 
 **先会使用，再认识数据，最后读代码。** 今天不需要把所有章节看完。每一课都按“故事 → 真实文件 → 小任务 → 参考答案”学习。看到新词就查解释，不必猜。
 
-项目核心功能已经实现，并有测试证据；这不代表你必须马上懂每一行。点赞、排行榜、共同作者网络和主动公开书单也已实现。已新增 Sites + D1 线上版，Python + MySQL 学习版继续保留。[公开网站已上线](https://ml-research-navigator.lyujianchen182.chatgpt.site)，部署说明见第16课，两个版本的区别见第17课。GitHub 上放的是源码。所有样例论文和作者都是虚构的。
+项目核心功能已经实现，并有测试证据；这不代表你必须马上懂每一行。点赞、排行榜、共同作者网络和主动公开书单也已实现。已新增 Sites + D1 线上版，Python + MySQL 学习版继续保留。[公开网站已上线](https://autumn-cyber-aka.github.io/ml-research-navigator/)，部署说明见第16课，两个版本的区别见第17课。GitHub 上放的是源码。所有样例论文和作者都是虚构的。
 
 ## 第一次来，先做这三件事
 
-1. 直接打开[公开网站](https://ml-research-navigator.lyujianchen182.chatgpt.site)，不需要安装。线上登录使用 ChatGPT，先读[第17课的六步体验](lessons/11_TWO_EDITIONS.md)。想跟着原版代码学习，再按第0课启动本机版本。
+1. 直接打开[公开网站](https://autumn-cyber-aka.github.io/ml-research-navigator/)，不需要安装。线上登录使用 ChatGPT，先读[第17课的六步体验](lessons/11_TWO_EDITIONS.md)。想跟着原版代码学习，再按第0课启动本机版本。
 2. 在 GitHub 打开本教程，依次点下面的课文链接。GitHub 阅读不要求先安装编辑器。
 3. 准备一张纸或一个笔记，每课写一句“我现在知道了什么”。不用先背定义。
 
@@ -36,6 +36,8 @@
 |15|作者关系图怎么画？|[合作者网络](lessons/09_COMMUNITY.md)|理解自连接与直接合作者|
 |16|别人怎么打开我的网站？|[公开部署](lessons/10_PUBLIC_DEPLOYMENT.md)|区分源码、服务器、数据库，读懂部署步骤|
 |17|线上版和学习版为什么不同？|[两种实现，一个图书馆](lessons/11_TWO_EDITIONS.md)|使用 ChatGPT 登录，分清 MySQL 与 D1|
+
+|18|换到 GitHub Pages 后功能怎么保留？|[前端与后端一起工作](lessons/12_GITHUB_PAGES.md)|理解跨站登录、部署顺序和云端保存|
 
 第0—3课可以先只看网页、表格和例子。第4—6课开始接触代码。后面的课建立在前面概念上。没有“一天学完”的要求。
 

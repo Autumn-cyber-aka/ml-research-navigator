@@ -1,6 +1,6 @@
 # ML Research Navigator
 
-**[Open the public website](https://ml-research-navigator.lyujianchen182.chatgpt.site)** · [零基础18课](docs/LEARNING_GUIDE.md)
+**[Open the public website](https://autumn-cyber-aka.github.io/ml-research-navigator/)** · [零基础19课](docs/LEARNING_GUIDE.md)
 
 The website uses the separate Sites + D1 edition; sign in with ChatGPT to save personal data. The Python + MySQL learning edition described below remains fully available.
 

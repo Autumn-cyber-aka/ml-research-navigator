@@ -76,7 +76,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 const href = (view: string, extra: Row = {}) =>
-  '/?' +
+  '?' +
   new URLSearchParams({
     view,
     ...Object.fromEntries(
@@ -191,7 +191,15 @@ function EmptyState({
     </Empty>
   );
 }
+export type NavigatorClient = {
+  basePath: string;
+  request: (path: string, init?: RequestInit) => Promise<Response>;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
+};
 type NavigatorState = {
+  basePath: string;
+  login?: () => void;
   data: Row | null;
   search: string;
   go: (url: string) => void;
@@ -217,10 +225,10 @@ const Nav = ({
   children: ReactNode;
   className?: string;
 }) => {
-  const { go } = useNavigator();
+  const { go, basePath } = useNavigator();
   return (
     <a
-      href={to}
+      href={to === '/' ? basePath : to}
       className={className}
       onClick={(e) => {
         if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
@@ -233,16 +241,41 @@ const Nav = ({
     </a>
   );
 };
+const SignInLink = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
+  const { signIn, login } = useNavigator();
+  return (
+    <a
+      href={signIn}
+      target="_top"
+      className={className}
+      onClick={
+        login
+          ? (e) => {
+              e.preventDefault();
+              login();
+            }
+          : undefined
+      }
+    >
+      {children}
+    </a>
+  );
+};
 const SignIn = () => {
-  const { signIn } = useNavigator();
   return (
     <EmptyState title="Keep a workspace of your own">
       <p>
         Sign in to save reading lists, track progress, and join discussions.
       </p>
-      <a href={signIn} target="_top" className="text-primary font-semibold">
+      <SignInLink className="text-primary font-semibold">
         Sign in with ChatGPT →
-      </a>
+      </SignInLink>
     </EmptyState>
   );
 };
@@ -342,7 +375,7 @@ const Paper = ({ p, remove }: { p: Row; remove?: () => void }) => {
   );
 };
 const Vote = ({ kind, item }: { kind: string; item: Row }) => {
-  const { signedIn, busy, signIn, click } = useNavigator();
+  const { signedIn, busy, click } = useNavigator();
   return (
     <div className="actions text-sm mt-4">
       <span className="muted">
@@ -366,9 +399,7 @@ const Vote = ({ kind, item }: { kind: string; item: Row }) => {
         </Button>
       )}
       {!signedIn && (
-        <a href={signIn} target="_top" className="text-primary">
-          Sign in to vote
-        </a>
+        <SignInLink className="text-primary">Sign in to vote</SignInLink>
       )}
     </div>
   );
@@ -443,10 +474,12 @@ export default function Navigator({
   signedIn,
   signIn,
   initialSearch,
+  client,
 }: {
   signedIn: boolean;
   signIn: string;
   initialSearch: string;
+  client?: NavigatorClient;
 }) {
   const [search, setSearch] = useState(initialSearch),
     [data, setData] = useState<Row | null>(null),
@@ -455,11 +488,12 @@ export default function Navigator({
     [loading, setLoading] = useState(true),
     [busy, setBusy] = useState(false),
     [revision, setRevision] = useState(0);
+  const apiFetch = client?.request ?? fetch;
   const params = new URLSearchParams(search),
     view = params.get('view') || 'papers';
   const go = useCallback((url: string) => {
     const s = new URL(url, window.location.origin).search;
-    window.history.pushState({}, '', s || '/');
+    window.history.pushState({}, '', window.location.pathname + s);
     setSearch(s);
     setNotice('');
     setLoading(true);
@@ -482,7 +516,7 @@ export default function Navigator({
   }, []);
   useEffect(() => {
     const c = new AbortController();
-    fetch('/api/data' + search, { signal: c.signal, cache: 'no-store' })
+    apiFetch('/api/data' + search, { signal: c.signal, cache: 'no-store' })
       .then(async (r) => {
         const d = (await r.json()) as Row;
         if (!r.ok) throw new Error(d.error || 'Unable to load this page.');
@@ -496,7 +530,7 @@ export default function Navigator({
         if (!c.signal.aborted) setLoading(false);
       });
     return () => c.abort();
-  }, [search, revision]);
+  }, [search, revision, apiFetch]);
   const reload = () => {
     setLoading(true);
     setError('');
@@ -508,7 +542,7 @@ export default function Navigator({
     setError('');
     setNotice('');
     try {
-      const r = await fetch('/api/data', {
+      const r = await apiFetch('/api/data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -584,7 +618,7 @@ export default function Navigator({
                 throw new Error(
                   'query must be a string of at most 200 characters',
                 );
-              const r = await fetch(
+              const r = await apiFetch(
                 '/api/data?' + new URLSearchParams({ view: 'papers', q }),
               );
               const d = (await r.json()) as Row;
@@ -606,10 +640,25 @@ export default function Navigator({
       /* Unsupported browser implementation. */
     }
     return () => lifecycle.abort();
-  }, [go]);
+  }, [go, apiFetch]);
   return (
     <NavigatorContext.Provider
-      value={{ data, search, go, busy, signedIn, signIn, click, act }}
+      value={{
+        data,
+        search,
+        go,
+        busy,
+        signedIn,
+        signIn,
+        click,
+        act,
+        basePath: client?.basePath ?? '/',
+        login: client
+          ? () => {
+              void client.signIn().catch((e) => setError(e.message));
+            }
+          : undefined,
+      }}
     >
       <SidebarProvider>
         <a href="#main" className="sr-only focus:not-sr-only">
@@ -674,18 +723,32 @@ export default function Navigator({
                     />
                   </div>
                 </details>
-                <a
-                  href="/signout-with-chatgpt?return_to=%2F"
-                  target="_top"
-                  className="text-sm"
-                >
-                  Sign out →
-                </a>
+                {client ? (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      void client
+                        .signOut()
+                        .then(reload)
+                        .catch((e) => setError(e.message));
+                    }}
+                  >
+                    Sign out →
+                  </Button>
+                ) : (
+                  <a
+                    href="/signout-with-chatgpt?return_to=%2F"
+                    target="_top"
+                    className="text-sm"
+                  >
+                    Sign out →
+                  </a>
+                )}
               </>
             ) : (
-              <a href={signIn} target="_top" className="text-sm font-semibold">
+              <SignInLink className="text-sm font-semibold">
                 Sign in with ChatGPT →
-              </a>
+              </SignInLink>
             )}
           </SidebarFooter>
         </Sidebar>

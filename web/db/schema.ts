@@ -201,3 +201,29 @@ export const listVotes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.list_id, t.user_id] })],
 );
+
+// Cross-origin Pages transport sessions; platform ChatGPT remains the identity provider.
+export const pagesAuthCodes = sqliteTable(
+  'pages_auth_codes',
+  {
+    code_hash: text('code_hash').primaryKey(),
+    user_id: text('user_id')
+      .notNull()
+      .references(() => users.user_id, { onDelete: 'cascade' }),
+    challenge: text('challenge').notNull(),
+    state: text('state').notNull(),
+    expires_at: integer('expires_at').notNull(),
+  },
+  (t) => [index('idx_pages_codes_expiry').on(t.expires_at)],
+);
+export const pagesSessions = sqliteTable(
+  'pages_sessions',
+  {
+    token_hash: text('token_hash').primaryKey(),
+    user_id: text('user_id')
+      .notNull()
+      .references(() => users.user_id, { onDelete: 'cascade' }),
+    expires_at: integer('expires_at').notNull(),
+  },
+  (t) => [index('idx_pages_sessions_expiry').on(t.expires_at)],
+);

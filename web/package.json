@@ -12,8 +12,9 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "db:generate": "drizzle-kit generate",
-    "test": "node --experimental-transform-types --test tests/store.test.mjs",
-    "typecheck": "tsc --noEmit"
+    "test": "node --experimental-transform-types --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "build:pages": "vite build --config vite.pages.config.ts"
   },
   "dependencies": {
     "react": "19.2.6",

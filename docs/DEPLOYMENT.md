@@ -1,3 +1,9 @@
+# GitHub Pages 全功能部署
+
+主要入口：[GitHub Pages](https://autumn-cyber-aka.github.io/ml-research-navigator/)。前端调用原 Sites 云端后端，数据库和全部业务功能保留。新增登录桥接表使 D1 共15张表。17项自动测试覆盖业务与登录交换。
+
+[零基础部署课]( lessons/12_GITHUB_PAGES.md )说明每一步；下面保留原云端部署记录作为后端参考。
+
 # Public deployment — live
 
 **Website: https://ml-research-navigator.lyujianchen182.chatgpt.site**
