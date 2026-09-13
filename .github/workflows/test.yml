@@ -17,6 +17,24 @@ jobs:
           set -o pipefail
           mkdir -p evidence
           docker compose --profile test run --build --rm test 2>&1 | tee evidence/test-run.txt
+      - name: Verify application startup and initialized catalogue
+        run: |
+          docker compose up --build -d app
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:5055/health > evidence/health.json; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:5055/health
+          curl --fail --silent http://127.0.0.1:5055/papers > evidence/catalogue.html
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          html = Path("evidence/catalogue.html").read_text()
+          assert "16 papers" in html
+          assert "Incremental Evaluation without Leakage" in html
+          print("Docker application health and initialized catalogue verified.")
+          PYTHON
       - name: Lint
         run: docker compose --profile test run --rm --no-deps test ruff check navigator tests scripts
       - name: Save raw test output
