@@ -1,0 +1,147 @@
+-- Independently authored schema v1. MySQL 8.4 LTS.
+-- Run once in an empty, dedicated database. No DROP / implicit reset.
+SET NAMES utf8mb4;
+SET time_zone = '+00:00';
+
+CREATE TABLE papers (
+    paper_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    source_key VARCHAR(100) NOT NULL UNIQUE,
+    title VARCHAR(500) NOT NULL,
+    abstract TEXT NOT NULL,
+    publication_year SMALLINT UNSIGNED NOT NULL,
+    topic VARCHAR(80) NOT NULL DEFAULT 'General',
+    INDEX idx_papers_year (publication_year, paper_id),
+    provenance VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT ck_paper_title CHECK (CHAR_LENGTH(TRIM(title)) > 0),
+    CONSTRAINT ck_paper_year CHECK (publication_year BETWEEN 1900 AND 2100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE authors (
+    author_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    display_name VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT ck_author_name CHECK (CHAR_LENGTH(TRIM(display_name)) > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE paper_authors (
+    paper_id BIGINT UNSIGNED NOT NULL,
+    author_id BIGINT UNSIGNED NOT NULL,
+    author_order SMALLINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (paper_id, author_id),
+    UNIQUE KEY uq_paper_author_order (paper_id, author_order),
+    CONSTRAINT ck_author_order CHECK (author_order > 0),
+    FOREIGN KEY (paper_id) REFERENCES papers(paper_id) ON DELETE RESTRICT,
+    FOREIGN KEY (author_id) REFERENCES authors(author_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE users (
+    user_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    display_name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT ck_email_nonempty CHECK (CHAR_LENGTH(TRIM(email)) > 0),
+    CONSTRAINT ck_user_name CHECK (CHAR_LENGTH(TRIM(display_name)) > 0),
+    CONSTRAINT ck_hash_nonempty CHECK (CHAR_LENGTH(password_hash) > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE reading_states (
+    user_id BIGINT UNSIGNED NOT NULL,
+    paper_id BIGINT UNSIGNED NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    status VARCHAR(10) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, paper_id),
+    CONSTRAINT ck_reading_status CHECK (status IN ('want', 'reading', 'read')),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (paper_id) REFERENCES papers(paper_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE reading_lists (
+    list_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    owner_id BIGINT UNSIGNED NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_owner_list_name (owner_id, name),
+    CONSTRAINT ck_list_name CHECK (CHAR_LENGTH(TRIM(name)) > 0),
+    FOREIGN KEY (owner_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE list_papers (
+    list_id BIGINT UNSIGNED NOT NULL,
+    paper_id BIGINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (list_id, paper_id),
+    FOREIGN KEY (list_id) REFERENCES reading_lists(list_id) ON DELETE CASCADE,
+    FOREIGN KEY (paper_id) REFERENCES papers(paper_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE auth_sessions (
+    token_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_sessions_expiry (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE login_attempts (
+    attempt_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    client_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_attempt_window (client_hash, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE reviews (
+    review_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    paper_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    rating TINYINT UNSIGNED NOT NULL,
+    body TEXT NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_user_paper_review (user_id,paper_id),
+    CONSTRAINT ck_review_rating CHECK (rating BETWEEN 1 AND 5),
+    CONSTRAINT ck_review_body CHECK (CHAR_LENGTH(TRIM(body)) BETWEEN 1 AND 5000),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (paper_id) REFERENCES papers(paper_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE posts (
+    post_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    paper_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    body TEXT NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT ck_post_title CHECK (CHAR_LENGTH(TRIM(title)) > 0),
+    CONSTRAINT ck_post_body CHECK (CHAR_LENGTH(TRIM(body)) BETWEEN 1 AND 10000),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (paper_id) REFERENCES papers(paper_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Replies are deliberately one level deep; their paper is determined by their post.
+CREATE TABLE replies (
+    reply_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    body TEXT NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT ck_reply_body CHECK (CHAR_LENGTH(TRIM(body)) BETWEEN 1 AND 5000),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

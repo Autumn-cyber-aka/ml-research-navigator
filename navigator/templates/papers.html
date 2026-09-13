@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% from 'macros.html' import paper_row,pager with context %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow accent">THE RESEARCH DESK</p><h1>A place for your next idea.</h1><p class="lead">Explore papers. Follow a question. Build your reading practice.</p></div><span class="collection-badge">SAMPLE<br><strong>COLLECTION</strong></span></div>
+<form class="search-panel" method="get" action="{{ url_for('main.papers') }}">
+  <div class="search-field"><label for="q">Search the library</label><input id="q" name="q" value="{{ filters.q }}" placeholder="A title, topic, or question…" maxlength="200"></div>
+  <div><label for="author">Author</label><input id="author" name="author" value="{{ filters.author }}" placeholder="Any author" maxlength="200"></div>
+  <div class="year-field"><label for="year">Year</label><input id="year" type="number" name="year" value="{{ filters.year }}" placeholder="Any year" min="1900" max="2100"></div>
+  <button>Search papers <span aria-hidden="true">→</span></button>
+</form>
+<div class="section-bar"><h2>{{ total }} paper{{ 's' if total != 1 }}</h2><span>Newest year first · Fictional metadata</span>{% if filters.q or filters.author or filters.year %}<a href="{{ url_for('main.papers') }}">Clear filters</a>{% endif %}</div>
+<section class="paper-list" aria-label="Paper results">{% for p in papers %}{{ paper_row(p) }}{% else %}<div class="empty"><h2>No papers found.</h2><p>Try a broader phrase, a different author, or clear the year.</p><a href="{{ url_for('main.papers') }}">Browse all papers →</a></div>{% endfor %}</section>
+{{ pager(page,pages) }}
+{% endblock %}

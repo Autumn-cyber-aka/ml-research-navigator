@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% from 'macros.html' import pager with context %}
+{% block title %}Authors{% endblock %}
+{% block content %}<p class="eyebrow accent">FOLLOW THE PEOPLE BEHIND THE IDEAS</p><h1>Authors</h1><p class="lead">Explore the sample collection through its fictional researchers.</p>
+<form class="inline-form" method="get"><label class="grow">Find an author<input name="q" value="{{ q }}" maxlength="200" placeholder="Search by name"></label><button>Search</button></form>
+<div class="section-bar"><h2>{{ total }} authors</h2></div><div class="author-grid">{% for a in authors %}<a class="panel author-card" href="{{ url_for('main.author_detail',author_id=a.author_id) }}"><span class="avatar">{{ a.display_name[-1] }}</span><h2>{{ a.display_name }}</h2><p>{{ a.paper_count }} papers <span>↗</span></p></a>{% else %}<div class="empty">No authors match this name.</div>{% endfor %}</div>{{ pager(page,pages) }}{% endblock %}

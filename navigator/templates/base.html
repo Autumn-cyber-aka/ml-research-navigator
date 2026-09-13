@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Discover research, organize your reading, and discuss ideas. An independent learning project with fictional sample data.">
+  <title>{% block title %}Research library{% endblock %} · ML Research Navigator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('main.papers') }}"><span class="brand-mark">N</span><span>RESEARCH<br><strong>NAVIGATOR</strong></span></a>
+    <p class="nav-label">DISCOVER</p>
+    <nav aria-label="Main navigation">
+      <a class="{{ 'active' if request.endpoint in ['main.papers','main.paper_detail'] else '' }}" href="{{ url_for('main.papers') }}"><span>⌕</span> Paper library</a>
+      <a class="{{ 'active' if request.endpoint in ['main.authors','main.author_detail'] else '' }}" href="{{ url_for('main.authors') }}"><span>◎</span> Authors</a>
+      <p class="nav-label">YOUR WORKSPACE</p>
+      <a class="{{ 'active' if request.endpoint == 'main.workspace' else '' }}" href="{{ url_for('main.workspace') }}"><span>◷</span> Reading progress</a>
+      <a class="{{ 'active' if request.endpoint in ['main.lists','main.list_detail'] else '' }}" href="{{ url_for('main.lists') }}"><span>▤</span> Reading lists</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sample-note"><span class="dot"></span> Sample collection<p>Fictional papers for learning.<br>No real publications or activity.</p></div>
+      {% if g.user %}<p class="account">{{ g.user.display_name }}</p><form method="post" action="{{ url_for('auth.logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button">Sign out</button></form>
+      {% else %}<a class="button" href="{{ url_for('auth.login') }}">Sign in</a>{% endif %}
+    </div>
+  </aside>
+  <div class="content">
+    <header class="topbar"><span>ML Research Navigator <span class="muted">/ {% block breadcrumb %}Discover{% endblock %}</span></span><span class="edition">INDEPENDENT LEARNING PROJECT</span></header>
+    <main id="main">
+      {% for category,message in get_flashed_messages(with_categories=true) %}<div class="notice {{ category }}" role="status">{{ message }}</div>{% endfor %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer>Built for thoughtful reading. <span>Flask · MySQL · Original implementation</span></footer>
+  </div>
+</div>
+</body>
+</html>

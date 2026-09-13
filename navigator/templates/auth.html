@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% from 'macros.html' import csrf %}
+{% block title %}{{ 'Create account' if registering else 'Sign in' }}{% endblock %}
+{% block content %}<div class="auth-layout"><div><p class="eyebrow accent">YOUR RESEARCH, IN ONE PLACE</p><h1>{{ 'Make room for ideas.' if registering else 'Welcome back.' }}</h1><p class="lead">Keep a reading list, track your progress, and join the conversation.</p><div class="quote-line">One paper.<br>One question.<br><span>One step further.</span></div></div>
+<section class="panel auth-panel"><h2>{{ 'Create your account' if registering else 'Sign in to your workspace' }}</h2>{% if error %}<p role="alert" class="notice error">{{ error }}</p>{% endif %}
+<form method="post" class="stack">{{ csrf() }}
+{% if registering %}<label>Display name<input name="display_name" maxlength="100" autocomplete="nickname" required></label>{% endif %}
+<label>Email<input type="email" name="email" maxlength="254" autocomplete="email" required></label>
+<label>Password<input type="password" name="password" minlength="{{ 12 if registering else 1 }}" maxlength="128" autocomplete="{{ 'new-password' if registering else 'current-password' }}" required></label>
+{% if registering %}<p class="muted">Use 12–128 characters. This local demo does not send verification or recovery emails.</p>{% endif %}
+<button>{{ 'Create account' if registering else 'Sign in' }} →</button></form>
+<p>{% if registering %}Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>{% else %}New here? <a href="{{ url_for('auth.register') }}">Create an account</a>{% endif %}</p>
+</section></div>{% endblock %}

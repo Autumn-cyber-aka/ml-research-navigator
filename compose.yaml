@@ -1,0 +1,73 @@
+name: ml-research-navigator
+services:
+  db:
+    image: mysql:8.4.11
+    environment:
+      MYSQL_DATABASE: navigator
+      MYSQL_USER: navigator
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run scripts/configure.py first}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run scripts/configure.py first}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+      - ./sql/fixture.sql:/docker-entrypoint-initdb.d/002-fixture.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u navigator navigator -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+      start_period: 20s
+  app:
+    build:
+      context: .
+      target: base
+    ports:
+      - "127.0.0.1:5055:8000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:?Run scripts/configure.py first}
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_UNIX_SOCKET: ""
+      MYSQL_USER: navigator
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: navigator
+      COOKIE_SECURE: "0"
+    depends_on:
+      db:
+        condition: service_healthy
+  db-test:
+    profiles: [test]
+    image: mysql:8.4.11
+    environment:
+      MYSQL_DATABASE: navigator_test
+      MYSQL_USER: navigator
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u navigator navigator_test -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+      start_period: 20s
+  test:
+    profiles: [test]
+    build:
+      context: .
+      target: test
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      MYSQL_UNIX_SOCKET: ""
+      MYSQL_USER: navigator
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: navigator_test
+      TEST_MYSQL_DATABASE: navigator_test
+      COOKIE_SECURE: "0"
+    depends_on:
+      db-test:
+        condition: service_healthy
+volumes:
+  mysql-data:

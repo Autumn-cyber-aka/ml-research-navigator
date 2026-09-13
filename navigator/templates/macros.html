@@ -1,0 +1,23 @@
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro paper_row(p, index=0) %}
+<article class="paper-row">
+  <div class="paper-number">{{ '%02d' % p.paper_id }}</div>
+  <div class="paper-main"><div class="eyebrow"><span class="topic">{{ p.topic }}</span><span>{{ p.publication_year }}</span>{% if p.status %}<span class="status {{ p.status }}">{{ status_labels[p.status] }}</span>{% endif %}</div>
+    <h2><a href="{{ url_for('main.paper_detail',paper_id=p.paper_id) }}">{{ p.title }}</a></h2>
+    <p class="authors">{% for a in p.authors %}<a href="{{ url_for('main.author_detail',author_id=a.author_id) }}">{{ a.display_name }}</a>{{ ' · ' if not loop.last }}{% endfor %}</p>
+    <p class="abstract-preview">{{ p.abstract }}</p>
+  </div>
+  <a class="arrow-link" href="{{ url_for('main.paper_detail',paper_id=p.paper_id) }}" aria-label="Read {{ p.title }}">↗</a>
+</article>
+{% endmacro %}
+{% macro pager(page,pages) %}
+{% if pages > 1 %}<nav class="pagination" aria-label="Pagination">
+{% if page > 1 %}<a href="{{ page_url(page-1) }}">← Previous</a>{% endif %}
+<span>Page {{ page }} of {{ pages }}</span>
+{% if page < pages %}<a href="{{ page_url(page+1) }}">Next →</a>{% endif %}
+</nav>{% endif %}
+{% endmacro %}
+{% macro posts_list(posts) %}
+{% for post in posts %}<article class="discussion-row"><h3><a href="{{ url_for('main.post_detail',post_id=post.post_id) }}">{{ post.title }}</a></h3><p class="muted">{{ post.display_name }} · {{ post.created_at.strftime('%b %d, %Y') }}</p></article>
+{% else %}<div class="empty small">No discussion yet. Start with a question or observation.</div>{% endfor %}
+{% endmacro %}

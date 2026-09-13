@@ -1,0 +1,30 @@
+name: MySQL integration tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate ephemeral local configuration
+        run: python3 scripts/configure.py
+      - name: Build and run on real MySQL 8.4
+        run: |
+          set -o pipefail
+          mkdir -p evidence
+          docker compose --profile test run --build --rm test 2>&1 | tee evidence/test-run.txt
+      - name: Lint
+        run: docker compose --profile test run --rm --no-deps test ruff check navigator tests scripts
+      - name: Save raw test output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mysql-test-evidence
+          path: evidence/
+      - name: Stop ephemeral services
+        if: always()
+        run: docker compose --profile test down

@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% from 'macros.html' import paper_row,pager with context %}
+{% block title %}Reading progress{% endblock %}{% block breadcrumb %}Workspace{% endblock %}
+{% block content %}<p class="eyebrow accent">YOUR READING PRACTICE</p><h1>Keep the thread.</h1><p class="lead">{{ g.user.display_name }}, here is where your reading stands.</p>
+<div class="stat-grid">{% for value,label in status_labels.items() %}<a class="stat {{ 'selected' if status == value }}" href="{{ url_for('main.workspace',status=value) }}"><span>{{ label }}</span><strong>{{ counts[value] }}</strong><span class="stat-arrow">↗</span></a>{% endfor %}</div>
+<div class="section-bar"><h2>{{ status_labels[status] if status else 'All tracked papers' }}</h2>{% if status %}<a href="{{ url_for('main.workspace') }}">Show all</a>{% endif %}</div><div class="paper-list">{% for p in papers %}{{ paper_row(p) }}{% else %}<div class="empty"><h2>A fresh page.</h2><p>Open a paper and save your reading progress to see it here.</p><a href="{{ url_for('main.papers') }}">Explore the library →</a></div>{% endfor %}</div>{{ pager(page,pages) }}{% endblock %}

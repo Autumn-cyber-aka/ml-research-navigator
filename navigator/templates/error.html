@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block title %}{{ code }}{% endblock %}
+{% block content %}<div class="empty error-page"><p class="eyebrow accent">{{ code }}</p><h1>Let's take a step back.</h1><p>{{ message }}</p><a class="button" href="{{ url_for('main.papers') }}">Back to the library</a></div>{% endblock %}

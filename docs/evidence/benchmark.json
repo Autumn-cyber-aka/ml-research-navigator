@@ -1,0 +1,832 @@
+{
+  "recorded_at": "2026-09-13T15:59:52.052016+00:00",
+  "python": "3.12.14",
+  "os": "Darwin",
+  "machine": "arm64",
+  "mysql": {
+    "version": "8.4.11",
+    "isolation_level": "REPEATABLE-READ"
+  },
+  "paper_rows": 30000,
+  "author_rows": 200,
+  "relationship_rows": 60000,
+  "source": "Deterministic synthetic data; no real papers or users",
+  "query": "SELECT p.paper_id,p.title,pa.author_order,a.display_name\nFROM (SELECT paper_id,title FROM bench_papers WHERE publication_year=%s\n      ORDER BY paper_id DESC LIMIT 20) p\nJOIN bench_paper_authors pa ON pa.paper_id=p.paper_id\nJOIN bench_authors a ON a.author_id=pa.author_id\nORDER BY p.paper_id DESC,pa.author_order",
+  "parameters": [
+    2026
+  ],
+  "warmups": 3,
+  "repeats": 20,
+  "before": {
+    "explain_json": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "33.21"
+        },
+        "ordering_operation": {
+          "using_temporary_table": true,
+          "using_filesort": true,
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "p",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 20,
+                "rows_produced_per_join": 20,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "2.75",
+                  "eval_cost": "2.00",
+                  "prefix_cost": "4.75",
+                  "data_read_per_join": "12K"
+                },
+                "used_columns": [
+                  "paper_id",
+                  "title"
+                ],
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 2,
+                    "cost_info": {
+                      "query_cost": "3060.85"
+                    },
+                    "ordering_operation": {
+                      "using_filesort": false,
+                      "table": {
+                        "table_name": "bench_papers",
+                        "access_type": "index",
+                        "key": "PRIMARY",
+                        "used_key_parts": [
+                          "paper_id"
+                        ],
+                        "key_length": "8",
+                        "rows_examined_per_scan": 20,
+                        "rows_produced_per_join": 3020,
+                        "filtered": "10.00",
+                        "backward_index_scan": true,
+                        "cost_info": {
+                          "read_cost": "2758.79",
+                          "eval_cost": "302.06",
+                          "prefix_cost": "3060.85",
+                          "data_read_per_join": "1M"
+                        },
+                        "used_columns": [
+                          "paper_id",
+                          "title",
+                          "publication_year"
+                        ],
+                        "attached_condition": "(`navigator_test`.`bench_papers`.`publication_year` = 2026)"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "table": {
+                "table_name": "pa",
+                "access_type": "ref",
+                "possible_keys": [
+                  "PRIMARY",
+                  "author_id"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "paper_id"
+                ],
+                "key_length": "8",
+                "ref": [
+                  "p.paper_id"
+                ],
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 41,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "10.00",
+                  "eval_cost": "4.10",
+                  "prefix_cost": "18.85",
+                  "data_read_per_join": "984"
+                },
+                "used_columns": [
+                  "paper_id",
+                  "author_id",
+                  "author_order"
+                ]
+              }
+            },
+            {
+              "table": {
+                "table_name": "a",
+                "access_type": "eq_ref",
+                "possible_keys": [
+                  "PRIMARY"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "author_id"
+                ],
+                "key_length": "8",
+                "ref": [
+                  "navigator_test.pa.author_id"
+                ],
+                "rows_examined_per_scan": 1,
+                "rows_produced_per_join": 41,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "10.26",
+                  "eval_cost": "4.10",
+                  "prefix_cost": "33.21",
+                  "data_read_per_join": "16K"
+                },
+                "used_columns": [
+                  "author_id",
+                  "display_name"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: p.paper_id DESC, pa.author_order  (actual time=0.229..0.23 rows=40 loops=1)\n    -> Stream results  (cost=25.6 rows=4.1) (actual time=0.18..0.222 rows=40 loops=1)\n        -> Nested loop inner join  (cost=25.6 rows=4.1) (actual time=0.179..0.217 rows=40 loops=1)\n            -> Nested loop inner join  (cost=15 rows=4.1) (actual time=0.178..0.199 rows=40 loops=1)\n                -> Table scan on p  (cost=3.29..4.55 rows=2) (actual time=0.175..0.176 rows=20 loops=1)\n                    -> Materialize  (cost=2.03..2.03 rows=2) (actual time=0.175..0.175 rows=20 loops=1)\n                        -> Limit: 20 row(s)  (cost=1.83 rows=2) (actual time=0.00783..0.162 rows=20 loops=1)\n                            -> Filter: (bench_papers.publication_year = 2026)  (cost=1.83 rows=2) (actual time=0.00771..0.161 rows=20 loops=1)\n                                -> Index scan on bench_papers using PRIMARY (reverse)  (cost=1.83 rows=20) (actual time=0.00392..0.14 rows=1103 loops=1)\n                -> Index lookup on pa using PRIMARY (paper_id=p.paper_id)  (cost=0.51 rows=2.05) (actual time=821e-6..987e-6 rows=2 loops=20)\n            -> Single-row index lookup on a using PRIMARY (author_id=pa.author_id)  (cost=0.252 rows=1) (actual time=370e-6..381e-6 rows=1 loops=40)\n",
+    "milliseconds": [
+      0.304,
+      0.301583,
+      0.301541,
+      0.303583,
+      0.300166,
+      0.301375,
+      0.303333,
+      0.302083,
+      0.298625,
+      0.303917,
+      0.549417,
+      0.399167,
+      0.318125,
+      0.301208,
+      0.300125,
+      0.301834,
+      0.309917,
+      0.317459,
+      0.321917,
+      0.319667
+    ],
+    "median_ms": 0.303458,
+    "returned_rows": 40,
+    "result": [
+      {
+        "paper_id": 29981,
+        "title": "Synthetic benchmark paper 29981",
+        "author_order": 1,
+        "display_name": "Synthetic author 182"
+      },
+      {
+        "paper_id": 29981,
+        "title": "Synthetic benchmark paper 29981",
+        "author_order": 2,
+        "display_name": "Synthetic author 183"
+      },
+      {
+        "paper_id": 29924,
+        "title": "Synthetic benchmark paper 29924",
+        "author_order": 1,
+        "display_name": "Synthetic author 125"
+      },
+      {
+        "paper_id": 29924,
+        "title": "Synthetic benchmark paper 29924",
+        "author_order": 2,
+        "display_name": "Synthetic author 126"
+      },
+      {
+        "paper_id": 29867,
+        "title": "Synthetic benchmark paper 29867",
+        "author_order": 1,
+        "display_name": "Synthetic author 68"
+      },
+      {
+        "paper_id": 29867,
+        "title": "Synthetic benchmark paper 29867",
+        "author_order": 2,
+        "display_name": "Synthetic author 69"
+      },
+      {
+        "paper_id": 29810,
+        "title": "Synthetic benchmark paper 29810",
+        "author_order": 1,
+        "display_name": "Synthetic author 11"
+      },
+      {
+        "paper_id": 29810,
+        "title": "Synthetic benchmark paper 29810",
+        "author_order": 2,
+        "display_name": "Synthetic author 12"
+      },
+      {
+        "paper_id": 29753,
+        "title": "Synthetic benchmark paper 29753",
+        "author_order": 1,
+        "display_name": "Synthetic author 154"
+      },
+      {
+        "paper_id": 29753,
+        "title": "Synthetic benchmark paper 29753",
+        "author_order": 2,
+        "display_name": "Synthetic author 155"
+      },
+      {
+        "paper_id": 29696,
+        "title": "Synthetic benchmark paper 29696",
+        "author_order": 1,
+        "display_name": "Synthetic author 97"
+      },
+      {
+        "paper_id": 29696,
+        "title": "Synthetic benchmark paper 29696",
+        "author_order": 2,
+        "display_name": "Synthetic author 98"
+      },
+      {
+        "paper_id": 29639,
+        "title": "Synthetic benchmark paper 29639",
+        "author_order": 1,
+        "display_name": "Synthetic author 40"
+      },
+      {
+        "paper_id": 29639,
+        "title": "Synthetic benchmark paper 29639",
+        "author_order": 2,
+        "display_name": "Synthetic author 41"
+      },
+      {
+        "paper_id": 29582,
+        "title": "Synthetic benchmark paper 29582",
+        "author_order": 1,
+        "display_name": "Synthetic author 183"
+      },
+      {
+        "paper_id": 29582,
+        "title": "Synthetic benchmark paper 29582",
+        "author_order": 2,
+        "display_name": "Synthetic author 184"
+      },
+      {
+        "paper_id": 29525,
+        "title": "Synthetic benchmark paper 29525",
+        "author_order": 1,
+        "display_name": "Synthetic author 126"
+      },
+      {
+        "paper_id": 29525,
+        "title": "Synthetic benchmark paper 29525",
+        "author_order": 2,
+        "display_name": "Synthetic author 127"
+      },
+      {
+        "paper_id": 29468,
+        "title": "Synthetic benchmark paper 29468",
+        "author_order": 1,
+        "display_name": "Synthetic author 69"
+      },
+      {
+        "paper_id": 29468,
+        "title": "Synthetic benchmark paper 29468",
+        "author_order": 2,
+        "display_name": "Synthetic author 70"
+      },
+      {
+        "paper_id": 29411,
+        "title": "Synthetic benchmark paper 29411",
+        "author_order": 1,
+        "display_name": "Synthetic author 12"
+      },
+      {
+        "paper_id": 29411,
+        "title": "Synthetic benchmark paper 29411",
+        "author_order": 2,
+        "display_name": "Synthetic author 13"
+      },
+      {
+        "paper_id": 29354,
+        "title": "Synthetic benchmark paper 29354",
+        "author_order": 1,
+        "display_name": "Synthetic author 155"
+      },
+      {
+        "paper_id": 29354,
+        "title": "Synthetic benchmark paper 29354",
+        "author_order": 2,
+        "display_name": "Synthetic author 156"
+      },
+      {
+        "paper_id": 29297,
+        "title": "Synthetic benchmark paper 29297",
+        "author_order": 1,
+        "display_name": "Synthetic author 98"
+      },
+      {
+        "paper_id": 29297,
+        "title": "Synthetic benchmark paper 29297",
+        "author_order": 2,
+        "display_name": "Synthetic author 99"
+      },
+      {
+        "paper_id": 29240,
+        "title": "Synthetic benchmark paper 29240",
+        "author_order": 1,
+        "display_name": "Synthetic author 41"
+      },
+      {
+        "paper_id": 29240,
+        "title": "Synthetic benchmark paper 29240",
+        "author_order": 2,
+        "display_name": "Synthetic author 42"
+      },
+      {
+        "paper_id": 29183,
+        "title": "Synthetic benchmark paper 29183",
+        "author_order": 1,
+        "display_name": "Synthetic author 184"
+      },
+      {
+        "paper_id": 29183,
+        "title": "Synthetic benchmark paper 29183",
+        "author_order": 2,
+        "display_name": "Synthetic author 185"
+      },
+      {
+        "paper_id": 29126,
+        "title": "Synthetic benchmark paper 29126",
+        "author_order": 1,
+        "display_name": "Synthetic author 127"
+      },
+      {
+        "paper_id": 29126,
+        "title": "Synthetic benchmark paper 29126",
+        "author_order": 2,
+        "display_name": "Synthetic author 128"
+      },
+      {
+        "paper_id": 29069,
+        "title": "Synthetic benchmark paper 29069",
+        "author_order": 1,
+        "display_name": "Synthetic author 70"
+      },
+      {
+        "paper_id": 29069,
+        "title": "Synthetic benchmark paper 29069",
+        "author_order": 2,
+        "display_name": "Synthetic author 71"
+      },
+      {
+        "paper_id": 29012,
+        "title": "Synthetic benchmark paper 29012",
+        "author_order": 1,
+        "display_name": "Synthetic author 13"
+      },
+      {
+        "paper_id": 29012,
+        "title": "Synthetic benchmark paper 29012",
+        "author_order": 2,
+        "display_name": "Synthetic author 14"
+      },
+      {
+        "paper_id": 28955,
+        "title": "Synthetic benchmark paper 28955",
+        "author_order": 1,
+        "display_name": "Synthetic author 156"
+      },
+      {
+        "paper_id": 28955,
+        "title": "Synthetic benchmark paper 28955",
+        "author_order": 2,
+        "display_name": "Synthetic author 157"
+      },
+      {
+        "paper_id": 28898,
+        "title": "Synthetic benchmark paper 28898",
+        "author_order": 1,
+        "display_name": "Synthetic author 99"
+      },
+      {
+        "paper_id": 28898,
+        "title": "Synthetic benchmark paper 28898",
+        "author_order": 2,
+        "display_name": "Synthetic author 100"
+      }
+    ]
+  },
+  "after": {
+    "explain_json": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "33.21"
+        },
+        "ordering_operation": {
+          "using_temporary_table": true,
+          "using_filesort": true,
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "p",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 20,
+                "rows_produced_per_join": 20,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "2.75",
+                  "eval_cost": "2.00",
+                  "prefix_cost": "4.75",
+                  "data_read_per_join": "12K"
+                },
+                "used_columns": [
+                  "paper_id",
+                  "title"
+                ],
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 2,
+                    "cost_info": {
+                      "query_cost": "173.35"
+                    },
+                    "ordering_operation": {
+                      "using_filesort": false,
+                      "table": {
+                        "table_name": "bench_papers",
+                        "access_type": "ref",
+                        "possible_keys": [
+                          "bench_year_id"
+                        ],
+                        "key": "bench_year_id",
+                        "used_key_parts": [
+                          "publication_year"
+                        ],
+                        "key_length": "4",
+                        "ref": [
+                          "const"
+                        ],
+                        "rows_examined_per_scan": 526,
+                        "rows_produced_per_join": 526,
+                        "filtered": "100.00",
+                        "backward_index_scan": true,
+                        "cost_info": {
+                          "read_cost": "120.75",
+                          "eval_cost": "52.60",
+                          "prefix_cost": "173.35",
+                          "data_read_per_join": "316K"
+                        },
+                        "used_columns": [
+                          "paper_id",
+                          "title",
+                          "publication_year"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "table": {
+                "table_name": "pa",
+                "access_type": "ref",
+                "possible_keys": [
+                  "PRIMARY",
+                  "author_id"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "paper_id"
+                ],
+                "key_length": "8",
+                "ref": [
+                  "p.paper_id"
+                ],
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 41,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "10.00",
+                  "eval_cost": "4.10",
+                  "prefix_cost": "18.85",
+                  "data_read_per_join": "984"
+                },
+                "used_columns": [
+                  "paper_id",
+                  "author_id",
+                  "author_order"
+                ]
+              }
+            },
+            {
+              "table": {
+                "table_name": "a",
+                "access_type": "eq_ref",
+                "possible_keys": [
+                  "PRIMARY"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "author_id"
+                ],
+                "key_length": "8",
+                "ref": [
+                  "navigator_test.pa.author_id"
+                ],
+                "rows_examined_per_scan": 1,
+                "rows_produced_per_join": 41,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "10.26",
+                  "eval_cost": "4.10",
+                  "prefix_cost": "33.21",
+                  "data_read_per_join": "16K"
+                },
+                "used_columns": [
+                  "author_id",
+                  "display_name"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: p.paper_id DESC, pa.author_order  (actual time=0.109..0.11 rows=40 loops=1)\n    -> Stream results  (cost=207 rows=41) (actual time=0.0581..0.104 rows=40 loops=1)\n        -> Nested loop inner join  (cost=207 rows=41) (actual time=0.0575..0.0989 rows=40 loops=1)\n            -> Nested loop inner join  (cost=192 rows=41) (actual time=0.0562..0.0795 rows=40 loops=1)\n                -> Table scan on p  (cost=175..178 rows=20) (actual time=0.0534..0.0545 rows=20 loops=1)\n                    -> Materialize  (cost=175..175 rows=20) (actual time=0.0529..0.0529 rows=20 loops=1)\n                        -> Limit: 20 row(s)  (cost=173 rows=20) (actual time=0.0449..0.0465 rows=20 loops=1)\n                            -> Index lookup on bench_papers using bench_year_id (publication_year=2026) (reverse)  (cost=173 rows=526) (actual time=0.0445..0.0457 rows=20 loops=1)\n                -> Index lookup on pa using PRIMARY (paper_id=p.paper_id)  (cost=0.51 rows=2.05) (actual time=944e-6..0.00111 rows=2 loops=20)\n            -> Single-row index lookup on a using PRIMARY (author_id=pa.author_id)  (cost=0.252 rows=1) (actual time=398e-6..416e-6 rows=1 loops=40)\n",
+    "milliseconds": [
+      0.200875,
+      0.195792,
+      0.195416,
+      0.593917,
+      0.279875,
+      0.236708,
+      0.221625,
+      0.378833,
+      0.215125,
+      0.206917,
+      0.2,
+      0.194667,
+      0.199583,
+      0.195333,
+      0.195667,
+      0.200792,
+      0.197167,
+      0.192708,
+      0.195334,
+      0.192083
+    ],
+    "median_ms": 0.1997915,
+    "returned_rows": 40,
+    "result": [
+      {
+        "paper_id": 29981,
+        "title": "Synthetic benchmark paper 29981",
+        "author_order": 1,
+        "display_name": "Synthetic author 182"
+      },
+      {
+        "paper_id": 29981,
+        "title": "Synthetic benchmark paper 29981",
+        "author_order": 2,
+        "display_name": "Synthetic author 183"
+      },
+      {
+        "paper_id": 29924,
+        "title": "Synthetic benchmark paper 29924",
+        "author_order": 1,
+        "display_name": "Synthetic author 125"
+      },
+      {
+        "paper_id": 29924,
+        "title": "Synthetic benchmark paper 29924",
+        "author_order": 2,
+        "display_name": "Synthetic author 126"
+      },
+      {
+        "paper_id": 29867,
+        "title": "Synthetic benchmark paper 29867",
+        "author_order": 1,
+        "display_name": "Synthetic author 68"
+      },
+      {
+        "paper_id": 29867,
+        "title": "Synthetic benchmark paper 29867",
+        "author_order": 2,
+        "display_name": "Synthetic author 69"
+      },
+      {
+        "paper_id": 29810,
+        "title": "Synthetic benchmark paper 29810",
+        "author_order": 1,
+        "display_name": "Synthetic author 11"
+      },
+      {
+        "paper_id": 29810,
+        "title": "Synthetic benchmark paper 29810",
+        "author_order": 2,
+        "display_name": "Synthetic author 12"
+      },
+      {
+        "paper_id": 29753,
+        "title": "Synthetic benchmark paper 29753",
+        "author_order": 1,
+        "display_name": "Synthetic author 154"
+      },
+      {
+        "paper_id": 29753,
+        "title": "Synthetic benchmark paper 29753",
+        "author_order": 2,
+        "display_name": "Synthetic author 155"
+      },
+      {
+        "paper_id": 29696,
+        "title": "Synthetic benchmark paper 29696",
+        "author_order": 1,
+        "display_name": "Synthetic author 97"
+      },
+      {
+        "paper_id": 29696,
+        "title": "Synthetic benchmark paper 29696",
+        "author_order": 2,
+        "display_name": "Synthetic author 98"
+      },
+      {
+        "paper_id": 29639,
+        "title": "Synthetic benchmark paper 29639",
+        "author_order": 1,
+        "display_name": "Synthetic author 40"
+      },
+      {
+        "paper_id": 29639,
+        "title": "Synthetic benchmark paper 29639",
+        "author_order": 2,
+        "display_name": "Synthetic author 41"
+      },
+      {
+        "paper_id": 29582,
+        "title": "Synthetic benchmark paper 29582",
+        "author_order": 1,
+        "display_name": "Synthetic author 183"
+      },
+      {
+        "paper_id": 29582,
+        "title": "Synthetic benchmark paper 29582",
+        "author_order": 2,
+        "display_name": "Synthetic author 184"
+      },
+      {
+        "paper_id": 29525,
+        "title": "Synthetic benchmark paper 29525",
+        "author_order": 1,
+        "display_name": "Synthetic author 126"
+      },
+      {
+        "paper_id": 29525,
+        "title": "Synthetic benchmark paper 29525",
+        "author_order": 2,
+        "display_name": "Synthetic author 127"
+      },
+      {
+        "paper_id": 29468,
+        "title": "Synthetic benchmark paper 29468",
+        "author_order": 1,
+        "display_name": "Synthetic author 69"
+      },
+      {
+        "paper_id": 29468,
+        "title": "Synthetic benchmark paper 29468",
+        "author_order": 2,
+        "display_name": "Synthetic author 70"
+      },
+      {
+        "paper_id": 29411,
+        "title": "Synthetic benchmark paper 29411",
+        "author_order": 1,
+        "display_name": "Synthetic author 12"
+      },
+      {
+        "paper_id": 29411,
+        "title": "Synthetic benchmark paper 29411",
+        "author_order": 2,
+        "display_name": "Synthetic author 13"
+      },
+      {
+        "paper_id": 29354,
+        "title": "Synthetic benchmark paper 29354",
+        "author_order": 1,
+        "display_name": "Synthetic author 155"
+      },
+      {
+        "paper_id": 29354,
+        "title": "Synthetic benchmark paper 29354",
+        "author_order": 2,
+        "display_name": "Synthetic author 156"
+      },
+      {
+        "paper_id": 29297,
+        "title": "Synthetic benchmark paper 29297",
+        "author_order": 1,
+        "display_name": "Synthetic author 98"
+      },
+      {
+        "paper_id": 29297,
+        "title": "Synthetic benchmark paper 29297",
+        "author_order": 2,
+        "display_name": "Synthetic author 99"
+      },
+      {
+        "paper_id": 29240,
+        "title": "Synthetic benchmark paper 29240",
+        "author_order": 1,
+        "display_name": "Synthetic author 41"
+      },
+      {
+        "paper_id": 29240,
+        "title": "Synthetic benchmark paper 29240",
+        "author_order": 2,
+        "display_name": "Synthetic author 42"
+      },
+      {
+        "paper_id": 29183,
+        "title": "Synthetic benchmark paper 29183",
+        "author_order": 1,
+        "display_name": "Synthetic author 184"
+      },
+      {
+        "paper_id": 29183,
+        "title": "Synthetic benchmark paper 29183",
+        "author_order": 2,
+        "display_name": "Synthetic author 185"
+      },
+      {
+        "paper_id": 29126,
+        "title": "Synthetic benchmark paper 29126",
+        "author_order": 1,
+        "display_name": "Synthetic author 127"
+      },
+      {
+        "paper_id": 29126,
+        "title": "Synthetic benchmark paper 29126",
+        "author_order": 2,
+        "display_name": "Synthetic author 128"
+      },
+      {
+        "paper_id": 29069,
+        "title": "Synthetic benchmark paper 29069",
+        "author_order": 1,
+        "display_name": "Synthetic author 70"
+      },
+      {
+        "paper_id": 29069,
+        "title": "Synthetic benchmark paper 29069",
+        "author_order": 2,
+        "display_name": "Synthetic author 71"
+      },
+      {
+        "paper_id": 29012,
+        "title": "Synthetic benchmark paper 29012",
+        "author_order": 1,
+        "display_name": "Synthetic author 13"
+      },
+      {
+        "paper_id": 29012,
+        "title": "Synthetic benchmark paper 29012",
+        "author_order": 2,
+        "display_name": "Synthetic author 14"
+      },
+      {
+        "paper_id": 28955,
+        "title": "Synthetic benchmark paper 28955",
+        "author_order": 1,
+        "display_name": "Synthetic author 156"
+      },
+      {
+        "paper_id": 28955,
+        "title": "Synthetic benchmark paper 28955",
+        "author_order": 2,
+        "display_name": "Synthetic author 157"
+      },
+      {
+        "paper_id": 28898,
+        "title": "Synthetic benchmark paper 28898",
+        "author_order": 1,
+        "display_name": "Synthetic author 99"
+      },
+      {
+        "paper_id": 28898,
+        "title": "Synthetic benchmark paper 28898",
+        "author_order": 2,
+        "display_name": "Synthetic author 100"
+      }
+    ]
+  },
+  "notes": "Client wall-clock includes transfer/materialization; warm local cache, single client. Estimated cost is not elapsed milliseconds. Small isolated experiment, not production throughput."
+}

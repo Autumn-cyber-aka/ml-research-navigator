@@ -1,0 +1,14 @@
+*
+!navigator/
+!navigator/**
+!sql/
+!sql/**
+!tests/
+!tests/**
+!scripts/
+!scripts/**
+!pyproject.toml
+!requirements.txt
+!requirements-dev.txt
+**/__pycache__/
+**/*.pyc
