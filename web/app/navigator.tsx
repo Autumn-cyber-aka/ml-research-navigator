@@ -759,7 +759,14 @@ export default function Navigator({
               ML Research Navigator <span className="muted">/ Discover</span>
             </span>
             <a
-              className="ml-auto text-sm text-primary"
+              className="ml-auto inline-flex shrink-0 items-center rounded-md border px-3 py-2 text-sm font-semibold hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              href="https://github.com/Autumn-cyber-aka/ml-research-navigator"
+              aria-label="Code — 查看 GitHub 源码仓库"
+            >
+              Code
+            </a>
+            <a
+              className="shrink-0 text-sm text-primary"
               href="https://github.com/Autumn-cyber-aka/ml-research-navigator/blob/main/docs/LEARNING_GUIDE.md"
               target="_blank"
               rel="noreferrer"
