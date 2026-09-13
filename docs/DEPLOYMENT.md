@@ -4,6 +4,8 @@
 
 [零基础部署课]( lessons/12_GITHUB_PAGES.md )说明每一步；下面保留原云端部署记录作为后端参考。
 
+后端第2版已发布，部署 `appgdep_6aa7094566ec8191a29e9d121e2b5729` 成功；新增两张表，保留原数据。公开 API 已验证 Pages CORS、16条论文记录和登录接口预检204。本地通过登录跳转、兑换、重复兑换拒绝及退出撤销；尚未完成真实用户在生产浏览器中的完整 OAuth 往返验收。
+
 # Public deployment — live
 
 **Website: https://ml-research-navigator.lyujianchen182.chatgpt.site**
@@ -49,3 +51,6 @@ This remains a small educational portfolio service: no content moderation, accou
 ## Unused alternative: host the original Flask + MySQL edition
 
 `render.yaml` and the lower part of [lesson 16](lessons/10_PUBLIC_DEPLOYMENT.md) retain the earlier Render Free + Aiven MySQL Free plan. No resources were created on those services, and you do not need to log into them for the current Sites website. That alternate route needs HTTPS proxy configuration, verified MySQL TLS, a separate cloud database, and privately managed runtime credentials.
+
+
+GitHub Pages 发布完成：[成功的部署记录](https://github.com/Autumn-cyber-aka/ml-research-navigator/actions/runs/34781296769)。已通过公开 HTML、JS、CSS 的 HTTP 检查，仓库子路径资源正常。Sites 检查工作流34781296727成功，17项测试通过。

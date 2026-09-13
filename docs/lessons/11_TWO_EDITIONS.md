@@ -1,5 +1,7 @@
 # 第17课：同一个图书馆，为什么有两种实现？
 
+当前公开入口已迁到 [GitHub Pages](https://autumn-cyber-aka.github.io/ml-research-navigator/)，全部功能仍使用原云端后端。请结合[第18课](12_GITHUB_PAGES.md)阅读；下面的 Sites 部署说明仍适用于后端。
+
 你可以把一个图书馆建在自己家里，也可以建在大家都能访问的地方。借书、写推荐、记录进度这些事情可以相同，但房子的建造材料不同。
 
 [点击打开公开网站](https://ml-research-navigator.lyujianchen182.chatgpt.site)。

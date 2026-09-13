@@ -1,5 +1,7 @@
 # 第16课：让别人也能打开网站
 
+当前公开入口已迁到 [GitHub Pages](https://autumn-cyber-aka.github.io/ml-research-navigator/)，全部功能仍使用原云端后端。请结合[第18课](12_GITHUB_PAGES.md)阅读；下面的 Sites 部署说明仍适用于后端。
+
 **当前采用 Sites 部署路线，沿用 PaperRank 使用的平台。** 平台帮我们运行线上程序并提供 D1，浏览目录无需登录，保存个人数据时点 Sign in with ChatGPT。你不需要继续注册 Render 和 Aiven。
 
 **[点击打开已经上线的网站](https://ml-research-navigator.lyujianchen182.chatgpt.site)。** 公开状态和验证详情见 [部署记录](../DEPLOYMENT.md)，操作步骤见[第17课](11_TWO_EDITIONS.md)。原来的 Flask + MySQL 代码完整保留在仓库里。
