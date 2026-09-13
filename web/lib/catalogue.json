@@ -1,0 +1,334 @@
+{
+  "papers": [
+    {
+      "paper_id": 1,
+      "source_key": "fixture:001",
+      "title": "Tiny Forest Classifiers",
+      "abstract": "A fictional study of compact tree ensembles. Use this sample to practice comparing assumptions, evaluation methods, and model size.",
+      "publication_year": 2025,
+      "topic": "Learning theory",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 2,
+      "source_key": "fixture:002",
+      "title": "Reading Graph Representations",
+      "abstract": "A fictional introduction to graph representations and message passing. The example is designed for author and year filtering.",
+      "publication_year": 2024,
+      "topic": "Graph learning",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 3,
+      "source_key": "fixture:003",
+      "title": "Evaluating Small Predictors",
+      "abstract": "A fictional evaluation protocol for small predictors, illustrating held-out splits and robustness checks. No experiment was conducted.",
+      "publication_year": 2025,
+      "topic": "Evaluation",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 4,
+      "source_key": "fixture:004",
+      "title": "When Embeddings Forget Structure",
+      "abstract": "A fictional exploration of the structure lost during embedding compression, with questions for a reading group.",
+      "publication_year": 2026,
+      "topic": "Representation learning",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 5,
+      "source_key": "fixture:005",
+      "title": "A Map of Efficient Attention",
+      "abstract": "An invented comparison of attention mechanisms under limited memory. This is teaching metadata, not a published survey.",
+      "publication_year": 2026,
+      "topic": "Language models",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 6,
+      "source_key": "fixture:006",
+      "title": "Learning from Noisy Labels",
+      "abstract": "An invented paper about training with unreliable labels and checking sensitivity to annotation errors.",
+      "publication_year": 2025,
+      "topic": "Learning theory",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 7,
+      "source_key": "fixture:007",
+      "title": "Retrieval in Small Research Collections",
+      "abstract": "A fictional comparison of retrieval approaches for a small collection of scientific documents.",
+      "publication_year": 2026,
+      "topic": "Information retrieval",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 8,
+      "source_key": "fixture:008",
+      "title": "Measuring Dataset Drift",
+      "abstract": "A fictional framework for inspecting distribution changes between training and evaluation datasets.",
+      "publication_year": 2024,
+      "topic": "Evaluation",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 9,
+      "source_key": "fixture:009",
+      "title": "Sparse Routes through Large Models",
+      "abstract": "An invented overview of conditional computation and sparse routing, prepared for database exercises.",
+      "publication_year": 2025,
+      "topic": "Language models",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 10,
+      "source_key": "fixture:010",
+      "title": "Calibrating Confidence under Shift",
+      "abstract": "A fictional discussion of confidence calibration when the evaluation distribution changes.",
+      "publication_year": 2026,
+      "topic": "Evaluation",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 11,
+      "source_key": "fixture:011",
+      "title": "Graph Sampling on a Budget",
+      "abstract": "An invented analysis of graph sampling tradeoffs under a fixed memory budget.",
+      "publication_year": 2023,
+      "topic": "Graph learning",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 12,
+      "source_key": "fixture:012",
+      "title": "Auditing Synthetic Training Data",
+      "abstract": "A fictional checklist for examining duplication, coverage, and provenance in synthetic datasets.",
+      "publication_year": 2026,
+      "topic": "Data quality",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 13,
+      "source_key": "fixture:013",
+      "title": "The Cost of Repeated Features",
+      "abstract": "An invented study of duplicate features and their effects on data processing and evaluation.",
+      "publication_year": 2024,
+      "topic": "Data quality",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 14,
+      "source_key": "fixture:014",
+      "title": "Compact Representations for Time Series",
+      "abstract": "A fictional exploration of compact representations for sequential observations.",
+      "publication_year": 2025,
+      "topic": "Representation learning",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 15,
+      "source_key": "fixture:015",
+      "title": "Reproducible Baselines for Small Data",
+      "abstract": "A fictional comparison of baseline protocols for small datasets; no measured results are claimed.",
+      "publication_year": 2023,
+      "topic": "Evaluation",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    },
+    {
+      "paper_id": 16,
+      "source_key": "fixture:016",
+      "title": "Incremental Evaluation without Leakage",
+      "abstract": "An invented proposal for keeping train and evaluation data separate as records arrive.",
+      "publication_year": 2026,
+      "topic": "Data quality",
+      "provenance": "AI-authored fictional fixture v2; 2026-09-13"
+    }
+  ],
+  "authors": [
+    {
+      "author_id": 1,
+      "display_name": "Sample Researcher A"
+    },
+    {
+      "author_id": 2,
+      "display_name": "Sample Researcher B"
+    },
+    {
+      "author_id": 3,
+      "display_name": "Sample Researcher C"
+    },
+    {
+      "author_id": 4,
+      "display_name": "Sample Researcher D"
+    },
+    {
+      "author_id": 5,
+      "display_name": "Sample Researcher E"
+    },
+    {
+      "author_id": 6,
+      "display_name": "Sample Researcher F"
+    },
+    {
+      "author_id": 7,
+      "display_name": "Sample Researcher G"
+    },
+    {
+      "author_id": 8,
+      "display_name": "Sample Researcher H"
+    }
+  ],
+  "paper_authors": [
+    {
+      "paper_id": 1,
+      "author_id": 1,
+      "author_order": 1
+    },
+    {
+      "paper_id": 1,
+      "author_id": 2,
+      "author_order": 2
+    },
+    {
+      "paper_id": 2,
+      "author_id": 2,
+      "author_order": 1
+    },
+    {
+      "paper_id": 3,
+      "author_id": 3,
+      "author_order": 1
+    },
+    {
+      "paper_id": 4,
+      "author_id": 4,
+      "author_order": 1
+    },
+    {
+      "paper_id": 4,
+      "author_id": 5,
+      "author_order": 2
+    },
+    {
+      "paper_id": 5,
+      "author_id": 5,
+      "author_order": 1
+    },
+    {
+      "paper_id": 5,
+      "author_id": 6,
+      "author_order": 2
+    },
+    {
+      "paper_id": 6,
+      "author_id": 6,
+      "author_order": 1
+    },
+    {
+      "paper_id": 6,
+      "author_id": 7,
+      "author_order": 2
+    },
+    {
+      "paper_id": 7,
+      "author_id": 7,
+      "author_order": 1
+    },
+    {
+      "paper_id": 7,
+      "author_id": 8,
+      "author_order": 2
+    },
+    {
+      "paper_id": 8,
+      "author_id": 8,
+      "author_order": 1
+    },
+    {
+      "paper_id": 8,
+      "author_id": 1,
+      "author_order": 2
+    },
+    {
+      "paper_id": 9,
+      "author_id": 1,
+      "author_order": 1
+    },
+    {
+      "paper_id": 9,
+      "author_id": 2,
+      "author_order": 2
+    },
+    {
+      "paper_id": 10,
+      "author_id": 2,
+      "author_order": 1
+    },
+    {
+      "paper_id": 10,
+      "author_id": 3,
+      "author_order": 2
+    },
+    {
+      "paper_id": 11,
+      "author_id": 3,
+      "author_order": 1
+    },
+    {
+      "paper_id": 11,
+      "author_id": 4,
+      "author_order": 2
+    },
+    {
+      "paper_id": 12,
+      "author_id": 4,
+      "author_order": 1
+    },
+    {
+      "paper_id": 12,
+      "author_id": 5,
+      "author_order": 2
+    },
+    {
+      "paper_id": 13,
+      "author_id": 5,
+      "author_order": 1
+    },
+    {
+      "paper_id": 13,
+      "author_id": 6,
+      "author_order": 2
+    },
+    {
+      "paper_id": 14,
+      "author_id": 6,
+      "author_order": 1
+    },
+    {
+      "paper_id": 14,
+      "author_id": 7,
+      "author_order": 2
+    },
+    {
+      "paper_id": 15,
+      "author_id": 7,
+      "author_order": 1
+    },
+    {
+      "paper_id": 15,
+      "author_id": 8,
+      "author_order": 2
+    },
+    {
+      "paper_id": 16,
+      "author_id": 8,
+      "author_order": 1
+    },
+    {
+      "paper_id": 16,
+      "author_id": 1,
+      "author_order": 2
+    }
+  ]
+}

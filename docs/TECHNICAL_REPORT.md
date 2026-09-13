@@ -38,7 +38,7 @@ No triggers or stored procedures are added just to satisfy a checklist. Review a
 - Fictional metadata only; no active-user counts or real publications are claimed.
 - Public discussion, opt-in public reading lists, always-private reading progress. One-level replies.
 - Local single-instance MySQL, not a distributed storage or compute platform.
-- No email verification/reset, public moderation, account-deletion UI, backup automation or public hosting.
+- No application email verification/reset, public moderation, account-deletion UI or backup automation. Public hosting exists through the separate Sites edition below.
 - App DB credentials should be limited to DML after initialization for deployments beyond local learning. The disposable test account needs schema privileges for experiments.
 - Local HTTP uses `COOKIE_SECURE=0`; HTTPS deployments require secure-cookie and proxy configuration review.
 - The DB-backed rate limiter is a minimal IP-window safeguard, not a production abuse-prevention system.
@@ -52,4 +52,8 @@ Initial real import exposed quoted semicolons in fictional text; the SQL runner 
 
 The 38-test run includes idempotent/concurrent voting, self-vote rejection, public-list ownership and revocation, private-progress exclusion, ranking filters/arithmetic, coauthor selection and repeatable additive migration. Three vote tables bring the schema to 15 tables. HTTPS proxy and certificate/hostname verification settings have targeted configuration tests; an actual hosted TLS connection remains unverified until deployment.
 
-Render Free + Aiven MySQL Free deployment configuration is included. Account login and resource creation remain pending; see [deployment status](DEPLOYMENT.md). No public uptime or cloud persistence claim is made from the local tests.
+Render Free + Aiven MySQL Free deployment configuration is included. That route was superseded by a user-approved Sites + D1 edition; see [deployment status](DEPLOYMENT.md). No public uptime or cloud persistence claim is made from the local tests.
+
+## Public Sites edition
+
+A separate Worker/D1 implementation under web/ is deployed publicly with platform ChatGPT sign-in. Its 14 SQL/domain tests, TypeScript/lint/build and local Worker/D1 HTTP checks passed. Public hosted HTTP endpoints were verified without credentials; private reads and anonymous writes returned 401. Production browser OAuth and authenticated user writes are not claimed verified. Original MySQL code and evidence remain unchanged. See DEPLOYMENT.md for exact deployment identifiers, URL and evidence boundaries.

@@ -1,0 +1,46 @@
+{
+  "url": "https://ml-research-navigator.lyujianchen182.chatgpt.site",
+  "date": "2026-09-13",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=papers",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=authors",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=network&id=1",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=paper&id=1",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=leaderboard",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=community",
+      "status": 200
+    },
+    {
+      "path": "/api/data?view=lists",
+      "status": 401
+    },
+    {
+      "path": "/api/data?view=progress",
+      "status": 401
+    },
+    {
+      "path": "POST /api/data anonymous",
+      "status": 401
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+(node:84919) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ literal search, author filter, stable pagination and seed idempotence (6.583916ms)
+✔ private list isolation covers reads and every mutation (1.959875ms)
+✔ atomic batch rejects invalid papers; duplicate membership stays unique (1.795125ms)
+✔ concurrent list CAS has one winner and no partial loser additions (1.269334ms)
+✔ progress survives membership deletion and rejects stale writes (1.937167ms)
+✔ public sharing revokes links and never exposes private progress or identity IDs (1.583667ms)
+✔ reviews are unique, editable, owned, escaped as data and averaged correctly (1.460417ms)
+✔ review votes are idempotent, concurrent-safe, cannot self-vote, and cascade (1.603792ms)
+✔ rankings apply minimum/year filters and stable averages, not helpful votes (3.251167ms)
+✔ posts and one-level replies support ownership, versions, votes and cascading deletion (1.457625ms)
+✔ author graph counts distinct direct collaboration only (0.862375ms)
+✔ deleting a list retains papers and progress but removes memberships and likes (1.002125ms)
+✔ forged actions and malformed inputs do not mutate other data (0.899292ms)
+✔ mutation boundary rejects cross-site, missing origin, and form-encoded requests (18.911375ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.921167

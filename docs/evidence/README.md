@@ -5,3 +5,6 @@
 - GitHub Actions artifacts (once available): separate Linux/Docker runs; not interchangeable with the native run.
 
 No screenshots were collected. These files are software evidence, not proof of learner mastery or production performance. Tests and benchmarks operate only on disposable `navigator_test` data.
+
+- `sites-public-http.json`: public deployed Sites URL checked with unauthenticated curl requests on 2026-09-13. Catalogue/public views succeed; private reads and writes reject anonymous users.
+- `web/evidence/`: independent Sites-edition domain tests and verification notes; not interchangeable with the MySQL evidence.

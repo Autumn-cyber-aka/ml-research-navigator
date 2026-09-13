@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+body {
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+:root {
+ --background:#f7f9fc; --foreground:#16202e; --card:#fff; --card-foreground:#16202e;
+ --popover:#fff; --popover-foreground:#16202e; --primary:#234bd6; --primary-foreground:#fff;
+ --secondary:#edf2ff; --secondary-foreground:#234bd6; --muted:#eef2f7; --muted-foreground:#637083;
+ --accent:#edf2ff; --accent-foreground:#234bd6; --destructive:#b42332; --border:#dfe5ed;
+ --input:#cbd4e0; --ring:#234bd6; --radius:0.625rem; --sidebar:#111e34;
+ --sidebar-foreground:#edf2ff; --sidebar-primary:#9db3ff; --sidebar-primary-foreground:#111e34;
+ --sidebar-accent:#233551; --sidebar-accent-foreground:#fff; --sidebar-border:#30415d; --sidebar-ring:#9db3ff;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+body{font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6}h1{font-size:clamp(2rem,4vw,3rem);font-weight:650;line-height:1.18;letter-spacing:-.04em}h2{font-size:1.25rem;font-weight:650}h3{font-size:1.1rem;font-weight:650}p{margin:.5rem 0}a:hover{text-decoration:underline}label{display:block;font-size:.875rem;font-weight:600}input,textarea{font-size:1rem!important}button[data-slot=button]{min-height:44px;padding:.55rem 1rem}main{min-width:0}.eyebrow{font-size:.875rem;color:var(--primary);font-weight:600;letter-spacing:.08em;text-transform:uppercase}.paper-row{display:flex;gap:1.5rem;padding:1.8rem 0;border-bottom:1px solid var(--border)}.paper-id{color:#8b98ac;font-size:1.5rem;font-variant-numeric:tabular-nums}.paper-row h2 a{color:var(--foreground)}.muted{color:var(--muted-foreground)}.panel{background:white;border:1px solid var(--border);border-radius:10px;padding:1.4rem}.stack{display:grid;gap:1rem}.actions{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.prose{white-space:pre-wrap;overflow-wrap:anywhere}.nav-brand{font-size:1rem;font-weight:700;letter-spacing:.08em;line-height:1.4}.tag{font-size:.875rem;color:var(--primary);background:var(--secondary);padding:.15rem .5rem;border-radius:4px}.network svg{width:100%;max-height:580px}.network line{stroke:#b9c8e8;stroke-width:2}.network circle{fill:#234bd6}.network text{font-size:14px;text-anchor:middle;fill:#16202e}.network .initial{fill:white;font-weight:bold}.content-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:2rem}@media(max-width:1000px){.content-grid{grid-template-columns:1fr}}:focus-visible{outline:3px solid #8ea6ff;outline-offset:3px}

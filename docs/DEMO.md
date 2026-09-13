@@ -32,4 +32,4 @@ Use fictional data. Create two local test accounts yourself; do not reuse a real
 2. B marks A's review helpful, removes the vote, then votes again. Explain the composite primary key and retry-safe operation; show the concurrent-vote test.
 3. A and B rate the same paper 5 and 3. The default minimum-two-reviews leaderboard shows average 4 with count 2. Helpful votes do not change this average.
 4. Open an author's coauthor network and equivalent table. Explain the self-join, DISTINCT paper count and 24-direct-neighbor cap.
-5. Read `docs/DEPLOYMENT.md` before showing any public URL. A configuration file is not evidence of successful hosting. Explain the trusted proxy and database TLS boundary only to the depth you understand.
+5. Open the actual public URL recorded in `docs/DEPLOYMENT.md`. Explain that the deployed D1 edition is distinct from the MySQL learning/benchmark edition. Explain the trusted proxy and database TLS boundary only to the depth you understand.

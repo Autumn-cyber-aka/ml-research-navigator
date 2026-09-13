@@ -1,5 +1,9 @@
 # ML Research Navigator
 
+**[Open the public website](https://ml-research-navigator.lyujianchen182.chatgpt.site)** · [零基础18课](docs/LEARNING_GUIDE.md)
+
+The website uses the separate Sites + D1 edition; sign in with ChatGPT to save personal data. The Python + MySQL learning edition described below remains fully available.
+
 A research-paper workspace built with **Python, Flask, server-rendered Jinja HTML, and MySQL 8.4**. Search papers and authors, maintain private reading lists, track reading progress, and discuss papers.
 
 This is an **independent, AI-assisted learning implementation**, inspired by a public UIUC CS411 project. It is not that team's coursework. All bundled paper/author metadata is fictional. “ML” describes the subject area; this application does not train a machine-learning model.
@@ -65,7 +69,7 @@ Alternatively, `uv sync --frozen` uses the committed `uv.lock`. The requirements
 
 ## Public hosting and upgrading
 
-[Deployment status and configuration](docs/DEPLOYMENT.md) and [beginner deployment lesson](docs/lessons/10_PUBLIC_DEPLOYMENT.md) cover Render Free + Aiven MySQL Free. `render.yaml` configures a Python web service, HTTPS proxy handling and verified database TLS. **Hosting accounts/resources still need to be created; no public live URL is verified yet.**
+The `web/` directory is the **Sites + D1 online edition**, authorized separately from the original Flask + MySQL learning implementation. It uses platform-owned ChatGPT sign-in and durable cloud data. Both editions support reading lists, progress, reviews/discussions, votes, rankings and coauthor exploration; their data is separate. See [deployment status](docs/DEPLOYMENT.md), [the two-edition beginner lesson](docs/lessons/11_TWO_EDITIONS.md), and [web setup](web/README.md). `render.yaml` remains an unused alternative for hosting the original MySQL edition.
 
 For an existing database, update code and run `flask --app navigator migrate-db` with a migration identity before restarting the app. This additive migration preserves data and keeps all existing lists private. Docker users: `docker compose build app`, then `docker compose run --rm app flask --app navigator migrate-db`, then `docker compose up -d app`. Never delete your database volume to upgrade.
 
@@ -116,7 +120,7 @@ tests/              real-MySQL application and concurrency tests
 docs/               architecture, tutorial, demonstration and evidence
 ```
 
-Start learning with the [zero-prerequisite Chinese course](docs/LEARNING_GUIDE.md): 17 lessons covering files/terminals, a guided app tour, tables and SQL, Python basics, request tracing, a first edit, authentication, transactions, tests and interview practice, then community features and public deployment. Every chapter includes exercises and reference answers. Then use the [course index](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
+Start learning with the [zero-prerequisite Chinese course](docs/LEARNING_GUIDE.md): 18 lessons covering files/terminals, a guided app tour, tables and SQL, Python basics, request tracing, a first edit, authentication, transactions, tests and interview practice, then community features and public deployment. Every chapter includes exercises and reference answers. Then use the [course index](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
 
 ## Scope and limitations
 
