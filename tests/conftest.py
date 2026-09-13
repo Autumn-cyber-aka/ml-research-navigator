@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 from navigator import create_app
-from navigator.db import connect, run_script
+from navigator.db import connect, run_script, migrate_community
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -27,6 +27,7 @@ def app():
         tables = c.fetchall()
     if not tables:
         run_script(conn, ROOT / "sql/schema.sql")
+    migrate_community(conn)
     conn.close()
     return application
 
@@ -36,7 +37,7 @@ def reset_database(app):
     conn = connect(app.config)
     # Dedicated test database only, child-first. Never disable referential integrity.
     with conn.cursor() as c:
-        for table in ["replies", "posts", "reviews", "auth_sessions", "login_attempts", "list_papers",
+        for table in ["review_votes", "post_votes", "list_votes", "replies", "posts", "reviews", "auth_sessions", "login_attempts", "list_papers",
                       "reading_lists", "reading_states", "users", "paper_authors", "authors", "papers"]:
             c.execute(f"DELETE FROM {table}")
     run_script(conn, ROOT / "sql/fixture.sql")

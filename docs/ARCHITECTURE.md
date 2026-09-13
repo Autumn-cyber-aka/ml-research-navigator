@@ -32,9 +32,15 @@ erDiagram
     posts ||--o{ replies : receives
     users ||--o{ replies : writes
     users ||--o{ auth_sessions : owns
+    reviews ||--o{ review_votes : receives
+    posts ||--o{ post_votes : receives
+    reading_lists ||--o{ list_votes : receives
+    users ||--o{ review_votes : casts
+    users ||--o{ post_votes : casts
+    users ||--o{ list_votes : casts
 ```
 
-`login_attempts` is a separate short-lived operational log keyed by a hash of the remote address. The schema has 12 tables: seven core tables, two authentication tables and three discussion tables.
+`login_attempts` is a separate short-lived operational log keyed by a hash of the remote address. The schema has 15 tables: seven core tables, two authentication tables, three discussion tables and three vote tables.
 
 | Relation | Key / invariant | Delete policy |
 |---|---|---|
@@ -50,7 +56,7 @@ erDiagram
 | replies | ID; one parent post, no nested parent reply | Post/user cascade |
 | auth_sessions | SHA-256 token digest; expiry | User cascade |
 
-Timestamps use UTC. Titles/names are not identifiers. Foreign keys ensure existence but cannot authorize an HTTP caller. List ownership is checked on every list read/write, with a deliberately uniform 404 for a missing or foreign list.
+Timestamps use UTC. Titles/names are not identifiers. Foreign keys ensure existence but cannot authorize an HTTP caller. Private list routes check ownership with a uniform 404 for a missing or foreign list. Separate public read routes require is_public=TRUE and omit reading_states entirely. Publishing and unpublishing require owner authorization, a row lock and an expected version.
 
 The email normalization policy is lowercase + trim for this account system, with MySQL's case/accent-insensitive collation. It is not an attempt to perfectly model every international email provider. Real-paper deduplication and author identity resolution are future ingestion concerns; fixture source keys are stable local identifiers.
 
@@ -80,3 +86,9 @@ No client-supplied user ID is trusted. SQL values are bound parameters; internal
 Filter papers using `EXISTS` for matching authors; do not paginate a joined paper-author result, which would count authors instead of papers. Fetch one page of papers, then fetch all their authors with one bounded `IN` query. This avoids N+1 queries and `GROUP_CONCAT` truncation. Ordering includes a stable ID tie-breaker. OFFSET pagination remains costly at deep pages; keyset pagination is a sensible future extension.
 
 The list overview counts memberships and joins the current owner's progress, avoiding cross-user progress leakage. Paper reviews compute AVG directly from authoritative rows. Read pages are not a single transactionally frozen snapshot: counts and items can change between queries while other clients write.
+
+## Community queries and hosting
+
+Vote tables use composite (target,user) primary keys and cascading foreign keys. HTTP actions reject self-votes and private targets. Target-row locks serialize votes against deletion and visibility changes; idempotent insert/delete operations avoid duplicate counts on retries. Counts are aggregated from vote rows. Rating rankings preaggregate reviews before joining papers, use a minimum count filter, and have stable tie ordering. The coauthor graph uses a self-join and COUNT(DISTINCT paper_id), capped at 24 direct neighbors with a truncation notice and equivalent text table.
+
+Cloud connections use an explicitly supplied CA with required certificate and hostname checks (TLS 1.2 minimum). TRUST_PROXY is opt-in and trusts one forwarded address/protocol hop, never forwarded Host. Hosted SECRET_KEY and database credentials belong in provider secrets. Render configuration uses its assigned PORT and an independent persistent MySQL service. See DEPLOYMENT.md for actual status; configuration alone is not evidence of a running deployment.

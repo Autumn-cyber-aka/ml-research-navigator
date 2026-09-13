@@ -1,14 +1,15 @@
-.............................                                            [100%]
+......................................                                   [100%]
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.12.14-final-0 _______________
 
-Name                    Stmts   Miss  Cover   Missing
------------------------------------------------------
-navigator/__init__.py      51      2    96%   78-79
-navigator/auth.py          84      3    96%   41, 79, 98
-navigator/db.py            64      4    94%   80-81, 88-89
-navigator/routes.py       269      1    99%   342
-navigator/services.py      37      0   100%
------------------------------------------------------
-TOTAL                     505     10    98%
-29 passed in 2.71s
+Name                     Stmts   Miss  Cover   Missing
+------------------------------------------------------
+navigator/__init__.py       55      2    96%   85-86
+navigator/auth.py           84      3    96%   41, 79, 98
+navigator/community.py     100      1    99%   69
+navigator/db.py             84      7    92%   80, 92-93, 107-108, 115-116
+navigator/routes.py        273      1    99%   346
+navigator/services.py       37      0   100%
+------------------------------------------------------
+TOTAL                      633     14    98%
+38 passed in 4.33s

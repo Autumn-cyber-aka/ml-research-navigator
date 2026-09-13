@@ -8,6 +8,6 @@ Implemented: relational schema and fictional fixture; parameterized search and p
 
 Evidence and precise validation status are in docs/TECHNICAL_REPORT.md. The complete source is available for study, but personal mastery remains unverified until the learner can demonstrate and explain it.
 
-Optional features deferred: votes, leaderboards, coauthor network, triggers/stored procedures, external data ingestion and public web hosting. No paid service is required. GitHub is the requested source publication destination.
+Community features implemented: votes on reviews/posts/public lists, filtered rating leaderboards, direct coauthor network and opt-in list publishing. Public hosting is now requested: Render Free + Aiven MySQL Free configuration is prepared, awaiting account login and actual service creation. External ingestion and ML training remain outside this project. SQL transactions and direct aggregates are used instead of unnecessary trigger-maintained counters.
 
 Follow docs/LEARNING_GUIDE.md to learn step by step, docs/ARCHITECTURE.md for relationships/constraints, and docs/DEMO.md for acceptance and interview discussion.

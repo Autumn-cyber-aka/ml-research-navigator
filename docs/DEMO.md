@@ -25,3 +25,11 @@ Use fictional data. Create two local test accounts yourself; do not reuse a real
 - Why did the optimizer's estimated cost increase even while elapsed time decreased in this experiment?
 - How would you evaluate a deep-pagination bottleneck before adding infrastructure?
 - Which distributed-systems claims would be inaccurate for this application?
+
+## Community extension (another 3–5 minutes)
+
+1. A explicitly publishes one list; B opens its `/shared/lists/…` page and likes it. Verify that A's reading progress is absent. A makes it private again; B's old shared link returns 404.
+2. B marks A's review helpful, removes the vote, then votes again. Explain the composite primary key and retry-safe operation; show the concurrent-vote test.
+3. A and B rate the same paper 5 and 3. The default minimum-two-reviews leaderboard shows average 4 with count 2. Helpful votes do not change this average.
+4. Open an author's coauthor network and equivalent table. Explain the self-join, DISTINCT paper count and 24-direct-neighbor cap.
+5. Read `docs/DEPLOYMENT.md` before showing any public URL. A configuration file is not evidence of successful hosting. Explain the trusted proxy and database TLS boundary only to the depth you understand.

@@ -11,6 +11,8 @@ This is an **independent, AI-assisted learning implementation**, inspired by a p
 - Private reading-list CRUD, batch additions with deduplication and all-or-nothing rollback.
 - Independent want/reading/read progress with optimistic version checks.
 - One review per user per paper, ratings from 1–5, editable posts and one-level replies; ownership checks on every mutation.
+- Helpful votes on reviews, posts and explicitly public reading lists; idempotent like/unlike.
+- Paper rating leaderboard with minimum-review/year filters; direct coauthor SVG network and accessible table.
 - MySQL integration tests including two-user isolation, database constraints, rollback, and two-connection concurrency.
 - A reproducible multi-table indexing experiment with raw EXPLAIN, EXPLAIN ANALYZE, and timing samples.
 
@@ -61,6 +63,12 @@ The initializer refuses a nonempty database. MySQL DDL implicitly commits: a fai
 
 Alternatively, `uv sync --frozen` uses the committed `uv.lock`. The requirements files are pinned exports of that lock.
 
+## Public hosting and upgrading
+
+[Deployment status and configuration](docs/DEPLOYMENT.md) and [beginner deployment lesson](docs/lessons/10_PUBLIC_DEPLOYMENT.md) cover Render Free + Aiven MySQL Free. `render.yaml` configures a Python web service, HTTPS proxy handling and verified database TLS. **Hosting accounts/resources still need to be created; no public live URL is verified yet.**
+
+For an existing database, update code and run `flask --app navigator migrate-db` with a migration identity before restarting the app. This additive migration preserves data and keeps all existing lists private. Docker users: `docker compose build app`, then `docker compose run --rm app flask --app navigator migrate-db`, then `docker compose up -d app`. Never delete your database volume to upgrade.
+
 ## Tests
 
 ```bash
@@ -99,6 +107,7 @@ navigator/
   db.py             connections, explicit SQL and transaction boundaries
   services.py       ownership, batch operations and version checks
   routes.py         HTTP input validation and application flows
+  community.py      votes, public lists, ratings leaderboard and coauthor graph
   templates/        Jinja pages; escaped user text
   static/           CSS and favicon
 sql/                schema and fictional fixture
@@ -107,15 +116,15 @@ tests/              real-MySQL application and concurrency tests
 docs/               architecture, tutorial, demonstration and evidence
 ```
 
-Start learning with the [zero-prerequisite Chinese course](docs/LEARNING_GUIDE.md): 13 lessons covering files/terminals, a guided app tour, tables and SQL, Python basics, request tracing, a first edit, authentication, transactions, tests and interview practice. Every chapter includes exercises and reference answers. Then use the [course index](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
+Start learning with the [zero-prerequisite Chinese course](docs/LEARNING_GUIDE.md): 17 lessons covering files/terminals, a guided app tour, tables and SQL, Python basics, request tracing, a first edit, authentication, transactions, tests and interview practice, then community features and public deployment. Every chapter includes exercises and reference answers. Then use the [course index](docs/LEARNING_GUIDE.md), then read the [architecture](docs/ARCHITECTURE.md) and follow the [demo script](docs/DEMO.md).
 
 ## Scope and limitations
 
-This is a local portfolio application, not a production service or distributed database. No email verification/recovery, moderation, full-text relevance ranking, background ingestion, ML training, or cloud deployment is implemented. Reviews are public; reading lists and progress are private. Replies are one level deep. There is no account-deletion UI.
+This is a portfolio application, not a production service or distributed database. No email verification/recovery, moderation, full-text relevance ranking, background ingestion or ML training is implemented. Reviews and posts are public. Reading lists are private by default and can be explicitly published by their owner; personal reading progress always stays private. Replies are one level deep. There is no account-deletion UI.
 
 For public web hosting, use HTTPS and `COOKIE_SECURE=1`, configure a trusted reverse proxy deliberately, add operational monitoring/backups, and review abuse controls. The built-in DB-backed sign-in limit is a small local-demo safeguard, not a complete anti-abuse system. IP addresses are hashed without a salt for the window key; this is pseudonymization, not anonymization. Run `flask --app navigator prune-sessions` to delete expired sessions and old attempts.
 
-GitHub publication shares **source code**, not a live hosted backend. Optional votes, leaderboards, coauthor graphs and triggers/procedures are deliberately out of scope. Rating averages are computed from source rows instead of maintaining a redundant aggregate.
+GitHub publication shares **source code**, not a live hosted backend. Votes, leaderboards and coauthor graphs are implemented. Transactions and source-row aggregation provide the relevant consistency guarantees; redundant trigger-maintained counters are not used. Rating averages are computed from source rows instead of maintaining a redundant aggregate.
 
 ## Attribution and evidence
 

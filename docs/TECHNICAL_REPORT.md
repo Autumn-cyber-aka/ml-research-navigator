@@ -4,7 +4,7 @@
 
 The application uses Flask 3.1.3, Python 3.12.14, PyMySQL 1.2.0 and MySQL Community Server 8.4.11. Dependencies are locked. Local verification ran on macOS ARM64 with a dedicated MySQL instance using a Unix socket. No SQLite substitute or paid cloud was used.
 
-The final native run passed **29 tests**, with **98% reported Python statement coverage**. Coverage is not a proof of security or completeness. See [raw output](evidence/test-run.txt). Tests use the dedicated `navigator_test` database and keep CSRF enabled. They include public/authenticated page rendering, literal search and pagination, scrypt password verification, session revocation/expiry, CSRF rejection, secure cookies, two-user ownership boundaries, CRUD, XSS escaping, database constraints, failure rollback and two independent concurrent database connections.
+The final native run passed **38 tests**, with **98% reported Python statement coverage**. Coverage is not a proof of security or completeness. See [raw output](evidence/test-run.txt). Tests use the dedicated `navigator_test` database and keep CSRF enabled. They include public/authenticated page rendering, literal search and pagination, scrypt password verification, session revocation/expiry, CSRF rejection, secure cookies, two-user ownership boundaries, CRUD, XSS escaping, database constraints, failure rollback and two independent concurrent database connections.
 
 Schema initialization and seed import were executed successfully in the application database. Basic browser page loading and HTTP/template rendering were checked. Screenshot/visual inspection was not performed: automatic approval review rejected the screenshot because browser visual testing was not explicitly requested.
 
@@ -36,7 +36,7 @@ No triggers or stored procedures are added just to satisfy a checklist. Review a
 ## Known boundaries
 
 - Fictional metadata only; no active-user counts or real publications are claimed.
-- Public discussion, private reading lists and progress. One-level replies.
+- Public discussion, opt-in public reading lists, always-private reading progress. One-level replies.
 - Local single-instance MySQL, not a distributed storage or compute platform.
 - No email verification/reset, public moderation, account-deletion UI, backup automation or public hosting.
 - App DB credentials should be limited to DML after initialization for deployments beyond local learning. The disposable test account needs schema privileges for experiments.
@@ -47,3 +47,9 @@ No triggers or stored procedures are added just to satisfy a checklist. Review a
 ## Debugging evidence
 
 Initial real import exposed quoted semicolons in fictional text; the SQL runner now uses sqlparse and has rollback/quoted-semicolon regression coverage. Initial authenticated tests exposed a CSRF time-limit type mismatch; configuration now uses seconds. Both failures were fixed before the final native run. This report retains the failures as engineering context without publishing local paths or private credentials.
+
+## Community extension
+
+The 38-test run includes idempotent/concurrent voting, self-vote rejection, public-list ownership and revocation, private-progress exclusion, ranking filters/arithmetic, coauthor selection and repeatable additive migration. Three vote tables bring the schema to 15 tables. HTTPS proxy and certificate/hostname verification settings have targeted configuration tests; an actual hosted TLS connection remains unverified until deployment.
+
+Render Free + Aiven MySQL Free deployment configuration is included. Account login and resource creation remain pending; see [deployment status](DEPLOYMENT.md). No public uptime or cloud persistence claim is made from the local tests.

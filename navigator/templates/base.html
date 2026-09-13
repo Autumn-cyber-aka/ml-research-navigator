@@ -16,6 +16,8 @@
     <nav aria-label="Main navigation">
       <a class="{{ 'active' if request.endpoint in ['main.papers','main.paper_detail'] else '' }}" href="{{ url_for('main.papers') }}"><span>⌕</span> Paper library</a>
       <a class="{{ 'active' if request.endpoint in ['main.authors','main.author_detail'] else '' }}" href="{{ url_for('main.authors') }}"><span>◎</span> Authors</a>
+      <a href="{{ url_for('community.leaderboard') }}"><span>↗</span> Paper rankings</a>
+      <a href="{{ url_for('community.shared_lists') }}"><span>▧</span> Community lists</a>
       <p class="nav-label">YOUR WORKSPACE</p>
       <a class="{{ 'active' if request.endpoint == 'main.workspace' else '' }}" href="{{ url_for('main.workspace') }}"><span>◷</span> Reading progress</a>
       <a class="{{ 'active' if request.endpoint in ['main.lists','main.list_detail'] else '' }}" href="{{ url_for('main.lists') }}"><span>▤</span> Reading lists</a>

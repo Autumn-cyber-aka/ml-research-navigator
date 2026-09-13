@@ -201,7 +201,7 @@ query("SELECT paper_id, title FROM papers WHERE paper_id = %s", (1,))
 |auth_sessions|仍然有效的登录会话|
 |login_attempts|近期登录尝试，用来限制频繁尝试|
 
-连同前三张，共12张表。先理解前三张，再回来读其余表的键。
+连同前三张，这部分共12张表。第13课新增3张点赞表，所以完整项目现在有15张表。先理解前三张，再回来读其余表的键。
 
 ## 小任务与答案
 

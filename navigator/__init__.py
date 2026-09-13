@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, url_for
 from flask_wtf.csrf import CSRFProtect
 import pymysql
 from werkzeug.exceptions import HTTPException
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 csrf = CSRFProtect()
 
@@ -16,6 +17,8 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY"),
         MYSQL_UNIX_SOCKET=os.environ.get("MYSQL_UNIX_SOCKET"),
+        MYSQL_SSL_CA=os.environ.get("MYSQL_SSL_CA"),
+        TRUST_PROXY=os.environ.get("TRUST_PROXY", "0") == "1",
         MYSQL_HOST=os.environ.get("MYSQL_HOST", "127.0.0.1"),
         MYSQL_PORT=os.environ.get("MYSQL_PORT", "3306"),
         MYSQL_USER=os.environ.get("MYSQL_USER", "navigator"),
@@ -33,11 +36,15 @@ def create_app(test_config=None):
         app.config.update(test_config)
     if not app.config["SECRET_KEY"] or len(app.config["SECRET_KEY"]) < 32:
         raise RuntimeError("Set SECRET_KEY to a randomly generated value of at least 32 characters.")
+    if app.config["TRUST_PROXY"]:
+        # Enable only behind one trusted proxy; do not trust forwarded host headers.
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
     csrf.init_app(app)
-    from . import db, auth, routes
+    from . import db, auth, routes, community
     db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(routes.bp)
+    app.register_blueprint(community.bp)
     app.before_request(auth.load_user)
 
     @app.context_processor

@@ -2,6 +2,8 @@
 from contextlib import contextmanager
 from pathlib import Path
 
+import ssl
+
 import click
 import pymysql
 import sqlparse
@@ -9,6 +11,10 @@ from flask import current_app, g
 
 
 def connect(config):
+    tls = None
+    if config.get("MYSQL_SSL_CA"):
+        tls = ssl.create_default_context(cafile=config["MYSQL_SSL_CA"])
+        tls.minimum_version = ssl.TLSVersion.TLSv1_2
     return pymysql.connect(
         host=config["MYSQL_HOST"], port=int(config["MYSQL_PORT"]),
         unix_socket=config.get("MYSQL_UNIX_SOCKET") or None,
@@ -16,6 +22,7 @@ def connect(config):
         database=config["MYSQL_DATABASE"], charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor, autocommit=True,
         connect_timeout=5, read_timeout=10, write_timeout=10,
+        ssl=tls,
         init_command="SET time_zone = '+00:00'",
     )
 
@@ -64,7 +71,27 @@ def run_script(conn, path):
         raise
 
 
+def migrate_community(conn):
+    """Add community tables without deleting existing data; safe after partial DDL failure."""
+    root = Path(__file__).resolve().parents[1]
+    with conn.cursor() as cur:
+        cur.execute("SHOW COLUMNS FROM reading_lists LIKE 'is_public'")
+        if not cur.fetchone():
+            cur.execute("ALTER TABLE reading_lists ADD COLUMN is_public BOOLEAN NOT NULL DEFAULT FALSE")
+        text = (root / "sql/migrations/002_community.sql").read_text()
+        for statement in sqlparse.split(text):
+            cleaned = sqlparse.format(statement, strip_comments=True).strip()
+            if cleaned.startswith("CREATE TABLE "):
+                cur.execute(cleaned.replace("CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ", 1))
+
+
 def init_app(app):
+    @app.cli.command("migrate-db")
+    def migrate_command():
+        """Apply additive community migration. Existing reading lists stay private."""
+        migrate_community(get_db())
+        click.echo("Community schema ready; existing lists remain private.")
+
     @app.teardown_appcontext
     def close_db(_error):
         conn = g.pop("db", None)

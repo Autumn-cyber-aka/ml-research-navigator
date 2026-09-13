@@ -101,6 +101,8 @@ def paper_detail(paper_id):
                   (paper_id,), one=True)
     posts = query("SELECT p.*,u.display_name FROM posts p JOIN users u ON u.user_id=p.user_id "
                   "WHERE p.paper_id=%s ORDER BY p.post_id DESC LIMIT 5", (paper_id,))
+    from .community import attach_votes
+    attach_votes("review", reviews)
     return render_template("paper.html", paper=paper, state=state, lists=lists, reviews=reviews,
                            own_review=own_review, stats=stats, posts=posts, page=page,
                            pages=max(1, math.ceil(stats["n"]/PAGE_SIZE)))
@@ -329,6 +331,8 @@ def post_detail(post_id):
     replies = query("SELECT r.*,u.display_name FROM replies r JOIN users u ON u.user_id=r.user_id "
                     "WHERE r.post_id=%s ORDER BY r.reply_id LIMIT %s OFFSET %s",
                     (post_id, PAGE_SIZE, (page-1)*PAGE_SIZE))
+    from .community import attach_votes
+    attach_votes("post", [post])
     return render_template("post.html", post=post, replies=replies, page=page,
                            pages=max(1, math.ceil(total/PAGE_SIZE)))
 

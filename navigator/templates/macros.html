@@ -21,3 +21,8 @@
 {% for post in posts %}<article class="discussion-row"><h3><a href="{{ url_for('main.post_detail',post_id=post.post_id) }}">{{ post.title }}</a></h3><p class="muted">{{ post.display_name }} · {{ post.created_at.strftime('%b %d, %Y') }}</p></article>
 {% else %}<div class="empty small">No discussion yet. Start with a question or observation.</div>{% endfor %}
 {% endmacro %}
+
+{% macro vote_button(kind,item,owner_id) %}
+<div class="vote-line"><span>{{ item.votes }} {{ 'helpful votes' if kind == 'review' else 'likes' }}</span>
+{% if g.user and g.user.user_id != owner_id %}<form method="post" action="{{ url_for('community.vote',kind=kind,target_id=item[kind ~ '_id']) }}">{{ csrf() }}<input type="hidden" name="action" value="{{ 'unlike' if item.voted else 'like' }}"><button class="secondary" aria-pressed="{{ 'true' if item.voted else 'false' }}">{{ 'Remove vote' if item.voted else ('Helpful' if kind == 'review' else 'Like') }}</button></form>{% elif not g.user %}<a href="{{ url_for('auth.login') }}">Sign in to vote</a>{% endif %}</div>
+{% endmacro %}
