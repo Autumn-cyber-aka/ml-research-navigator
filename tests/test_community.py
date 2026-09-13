@@ -96,11 +96,20 @@ def test_coauthors_are_direct_and_counted_once(client, app):
 
 def test_migration_is_repeatable_and_preserves_lists(app, alice):
     lid = make_list(alice)
+    post(alice, f"/lists/{lid}/papers", {"paper_ids": "1,2"})
     conn = connect(app.config)
-    migrate_community(conn)
-    migrate_community(conn)
-    conn.close()
+    try:
+        # Reconstruct the old schema in the disposable test DB, retaining real fixture rows.
+        with conn.cursor() as cursor:
+            for table in ("review_votes", "post_votes", "list_votes"):
+                cursor.execute(f"DROP TABLE {table}")
+            cursor.execute("ALTER TABLE reading_lists DROP COLUMN is_public")
+        migrate_community(conn)
+        migrate_community(conn)
+    finally:
+        conn.close()
     assert scalar(app, "SELECT is_public FROM reading_lists WHERE list_id=%s", (lid,)) == 0
+    assert scalar(app, "SELECT COUNT(*) FROM list_papers WHERE list_id=%s", (lid,)) == 2
 
 
 def test_concurrent_same_user_vote_is_one_row(app, alice, bob):

@@ -7,9 +7,9 @@ Name                     Stmts   Miss  Cover   Missing
 navigator/__init__.py       55      2    96%   85-86
 navigator/auth.py           84      3    96%   41, 79, 98
 navigator/community.py     100      1    99%   69
-navigator/db.py             84      7    92%   80, 92-93, 107-108, 115-116
+navigator/db.py             84      6    93%   92-93, 107-108, 115-116
 navigator/routes.py        273      1    99%   346
 navigator/services.py       37      0   100%
 ------------------------------------------------------
-TOTAL                      633     14    98%
-38 passed in 4.33s
+TOTAL                      633     13    98%
+38 passed in 3.93s
